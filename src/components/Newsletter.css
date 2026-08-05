@@ -1,0 +1,191 @@
+.newsletter{
+
+    height:650px;
+
+    background-size:cover;
+
+    background-position:center;
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.newsletter-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:rgba(25,18,14,.42);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.newsletter-content{
+
+    text-align:center;
+
+    color:white;
+
+    max-width:700px;
+
+    padding:20px;
+
+}
+
+.newsletter-subtitle{
+
+    letter-spacing:6px;
+
+    font-family:Poppins,sans-serif;
+
+    font-size:15px;
+
+    margin-bottom:18px;
+
+}
+
+.newsletter-content h2{
+
+    font-family:"Cormorant Garamond",serif;
+
+    font-size:72px;
+
+    line-height:1.1;
+
+    margin-bottom:25px;
+
+}
+
+.newsletter-text{
+
+    font-family:Poppins,sans-serif;
+
+    font-size:18px;
+
+    line-height:1.8;
+
+    margin-bottom:45px;
+
+}
+
+.newsletter-form{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+}
+
+.newsletter-form input{
+
+    width:420px;
+
+    padding:18px 24px;
+
+    border:none;
+
+    border-radius:50px;
+
+    outline:none;
+
+    font-size:16px;
+
+    font-family:Poppins,sans-serif;
+
+}
+
+.newsletter-form button{
+
+    padding:18px 40px;
+
+    border:none;
+
+    border-radius:50px;
+
+    background:#8b6b55;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-family:Poppins,sans-serif;
+
+    font-size:16px;
+
+    transition:.3s;
+
+}
+
+.newsletter-form button:hover{
+
+    background:white;
+
+    color:#2c1b14;
+
+}
+
+.newsletter-content span{
+
+    display:block;
+
+    margin-top:25px;
+
+    font-size:14px;
+
+    font-family:Poppins,sans-serif;
+
+    opacity:.85;
+
+}
+
+@media(max-width:768px){
+
+.newsletter{
+
+height:720px;
+
+}
+
+.newsletter-content h2{
+
+font-size:48px;
+
+}
+
+.newsletter-form input{
+
+width:100%;
+
+}
+
+.newsletter-form{
+
+flex-direction:column;
+
+}
+
+.newsletter-form button{
+
+width:100%;
+
+}
+
+}
