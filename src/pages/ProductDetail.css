@@ -1,0 +1,238 @@
+/* =========================================
+   PRODUCT DETAIL PAGE (DESKTOP)
+========================================= */
+.pdp-page {
+  background: #faf8f5;
+  min-height: 100vh;
+  padding: 80px 8% 120px;
+}
+
+.pdp-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  align-items: flex-start;
+}
+
+.pdp-image-section {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.pdp-image-section img {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  display: block;
+}
+
+.pdp-category-badge {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  background: #201712;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  text-transform: uppercase;
+}
+
+.pdp-details-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.back-link {
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #8b6b55;
+  margin-bottom: 24px;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #201712;
+}
+
+.pdp-details-section h1 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 54px;
+  color: #201712;
+  margin-bottom: 12px;
+  line-height: 1.1;
+}
+
+.pdp-price {
+  font-family: "Poppins", sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #201712;
+  margin-bottom: 24px;
+}
+
+.pdp-description {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #555555;
+  margin-bottom: 35px;
+}
+
+/* SIZE SELECTOR */
+.size-selector {
+  margin-bottom: 35px;
+}
+
+.size-label {
+  display: block;
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #8b6b55;
+  margin-bottom: 12px;
+}
+
+.size-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.size-btn {
+  flex: 1;
+  padding: 14px;
+  border: 1px solid rgba(32, 23, 18, 0.2);
+  border-radius: 12px;
+  background: white;
+  color: #201712;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.size-btn:hover,
+.size-btn.active {
+  background: #201712;
+  color: white;
+  border-color: #201712;
+}
+
+/* ADD TO CART BUTTON */
+.pdp-add-btn {
+  width: 100%;
+  padding: 20px;
+  border: none;
+  border-radius: 40px;
+  background: #201712;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-bottom: 40px;
+}
+
+.pdp-add-btn:hover {
+  background: #8b6b55;
+}
+
+/* OLFACTORY PYRAMID (SCENT NOTES) */
+.scent-notes-container {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 30px 0;
+  margin-bottom: 30px;
+}
+
+.scent-notes-container h3 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 26px;
+  color: #201712;
+  margin-bottom: 20px;
+}
+
+.note-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.note-row:last-child {
+  margin-bottom: 0;
+}
+
+.note-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8b6b55;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.note-value {
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  color: #444444;
+  margin-top: 4px;
+}
+
+/* GUARANTEES */
+.pdp-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  color: #453c36;
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS (1 Stacked Column)
+========================================= */
+@media (max-width: 900px) {
+  .pdp-page {
+    padding: 40px 20px 80px;
+  }
+
+  .pdp-container {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .pdp-image-section img {
+    height: 400px; /* Shorter image for phone screen */
+  }
+
+  .pdp-details-section h1 {
+    font-size: 38px;
+  }
+
+  .pdp-price {
+    font-size: 24px;
+  }
+
+  .pdp-description {
+    font-size: 15px;
+  }
+
+  .size-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pdp-add-btn {
+    padding: 16px;
+    font-size: 13px;
+  }
+}

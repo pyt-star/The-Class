@@ -1,0 +1,236 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Poppins:wght@300;400;500&display=swap");
+
+/* =======================
+   NAVBAR (STICKY & LUXURY SPACED)
+======================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 84px;
+  background: #faf8f5;
+  border-bottom: 1px solid rgba(32, 23, 18, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 45px;
+  z-index: 1000;
+}
+
+.menu-btn,
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  color: #201712;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.menu-btn svg,
+.icon-btn svg {
+  font-size: 26px;
+  stroke-width: 1.5;
+}
+
+.menu-btn:hover,
+.icon-btn:hover {
+  color: #8b6b55;
+}
+
+/* Luxury Tracking for the Logo */
+.navbar-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: 14px;
+  color: #201712;
+  text-decoration: none;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.navbar-icons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* =======================
+   OVERLAY (BACKDROP FADE)
+======================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 14, 12, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 1500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* =======================
+   SIDEBAR DRAWER
+======================= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -420px;
+  width: 380px;
+  height: 100vh;
+  background: #faf8f5;
+  box-shadow: 10px 0 40px rgba(0, 0, 0, 0.12);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2000;
+}
+
+.sidebar.show {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(32, 23, 18, 0.1);
+  padding-bottom: 25px;
+}
+
+.sidebar-brand {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  letter-spacing: 8px;
+  color: #201712;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #201712;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.close-btn svg {
+  font-size: 28px;
+  transition: transform 0.3s ease;
+}
+
+.close-btn:hover svg {
+  transform: rotate(90deg);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 40px 0 auto;
+}
+
+.sidebar-nav a {
+  text-decoration: none;
+  color: #201712;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px;
+  font-weight: 400;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-nav a:hover {
+  color: #8b6b55;
+  transform: translateX(8px);
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(32, 23, 18, 0.1);
+  padding-top: 25px;
+}
+
+.footer-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.social-links {
+  display: flex;
+  gap: 20px;
+}
+
+.social-links a {
+  text-decoration: none;
+  color: #453c36;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #201712;
+}
+
+/* =======================
+   MOBILE RESPONSIVENESS
+======================= */
+/* =========================================
+   NAVBAR MOBILE OVERRIDES (Bottom of Navbar.css)
+========================================= */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 16px;
+    height: 64px;
+  }
+
+  /* Shrink tracking so it NEVER touches the heart icon */
+  .navbar-logo {
+    font-size: 20px;
+    letter-spacing: 3px;
+    width: auto;
+    max-width: 180px;
+    text-align: center;
+  }
+
+  .navbar-icons {
+    gap: 10px;
+  }
+
+  .menu-btn svg,
+  .icon-btn svg {
+    font-size: 22px;
+  }
+
+  .sidebar {
+    width: 85%;
+    left: -100%;
+    padding: 30px 25px;
+  }
+
+  .sidebar.show {
+    left: 0;
+  }
+
+  .sidebar-nav a {
+    font-size: 24px;
+  }
+}

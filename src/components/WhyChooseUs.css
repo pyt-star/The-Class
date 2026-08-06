@@ -157,34 +157,57 @@
 
 }
 
-@media(max-width:1100px){
-
-.why-grid{
-
-grid-template-columns:repeat(2,1fr);
-
+/* =========================================
+   MOBILE OVERRIDES (Replace existing @media)
+========================================= */
+/* =========================================
+   WHY CHOOSE US MOBILE OVERRIDES (Bottom of WhyChooseUs.css)
+========================================= */
+@media (max-width: 1100px) {
+  .why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-}
+@media (max-width: 700px) {
+  .why {
+    padding: 50px 16px;
+  }
 
-@media(max-width:700px){
+  /* 2 Columns Side-by-Side on Phone */
+  .why-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 35px;
+  }
 
-.why{
+  .why-heading h2 {
+    font-size: 36px;
+  }
 
-padding:90px 6%;
+  .why-description {
+    font-size: 15px;
+  }
 
-}
+  .why-card {
+    padding: 24px 14px;
+    border-radius: 16px;
+  }
 
-.why-grid{
+  .why-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+  }
 
-grid-template-columns:1fr;
+  .why-card h3 {
+    font-size: 19px;
+    margin-top: 16px;
+  }
 
-}
-
-.why-heading h2{
-
-font-size:45px;
-
-}
-
+  .why-card p {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 10px;
+  }
 }

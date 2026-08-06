@@ -207,28 +207,90 @@
 
 }
 
-@media(max-width:1100px){
-
-.best-grid{
-
-grid-template-columns:repeat(2,1fr);
-
+/* =========================================
+   MOBILE OVERRIDES (Replace existing @media)
+========================================= */
+/* =========================================
+   BEST SELLER MOBILE OVERRIDES (Bottom of BestSeller.css)
+========================================= */
+@media (max-width: 1100px) {
+  .best-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-}
+@media (max-width: 700px) {
+  .bestSeller {
+    padding: 50px 16px;
+  }
 
-@media(max-width:700px){
+  /* 2 Columns Side-by-Side on Phone */
+  .best-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 35px;
+  }
 
-.best-grid{
+  .best-card img {
+    height: 180px; /* Perfectly matched to Featured cards */
+  }
 
-grid-template-columns:1fr;
+  .best-content {
+    padding: 14px 12px;
+  }
 
-}
+  .best-content h3 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
 
-.best-heading h2{
+  /* Scaled-down rating so 5 stars don't wrap */
+  .rating {
+    margin-bottom: 10px;
+    gap: 2px;
+  }
 
-font-size:45px;
+  .rating svg {
+    font-size: 11px;
+  }
 
-}
+  .rating span {
+    font-size: 11px;
+    margin-left: 4px;
+  }
 
+  .best-content h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .best-content p {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  .best-content button {
+    padding: 10px 8px;
+    font-size: 11px;
+    gap: 6px;
+    border-radius: 25px;
+  }
+
+  .best-badge {
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .heart {
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .best-heading h2 {
+    font-size: 36px;
+  }
 }

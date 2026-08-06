@@ -156,36 +156,13 @@
 
 }
 
-@media(max-width:768px){
-
-.newsletter{
-
-height:720px;
-
-}
-
-.newsletter-content h2{
-
-font-size:48px;
-
-}
-
-.newsletter-form input{
-
-width:100%;
-
-}
-
-.newsletter-form{
-
-flex-direction:column;
-
-}
-
-.newsletter-form button{
-
-width:100%;
-
-}
-
+/* Add this to the bottom of Newsletter.css */
+@media (max-width: 480px) {
+  .newsletter-content h2 {
+    font-size: 36px;
+  }
+  
+  .newsletter-text {
+    font-size: 16px;
+  }
 }

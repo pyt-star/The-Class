@@ -1,3 +1,14 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  overflow-x: hidden; /* This stops the horizontal scrolling bug on mobile! */
+}
 h1, p {
   font-family: Lato;
 }

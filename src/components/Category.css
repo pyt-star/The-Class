@@ -178,18 +178,59 @@
 
 }
 
-@media(max-width:900px){
+/* =========================================
+   MOBILE OVERRIDES (Replace existing @media)
+========================================= */
+/* =========================================
+   CATEGORY MOBILE OVERRIDES (Bottom of Category.css)
+========================================= */
+@media (max-width: 900px) {
+  .category {
+    padding: 50px 16px;
+  }
 
-.category-grid{
+  /* 2 Columns Side-by-Side on Phone */
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
 
-grid-template-columns:1fr;
+  .category-heading {
+    margin-bottom: 35px;
+  }
 
-}
+  .category-heading h2 {
+    font-size: 36px;
+  }
 
-.category-heading h2{
+  .category-heading span {
+    font-size: 15px;
+  }
 
-font-size:45px;
+  .category-card {
+    height: 260px; /* Square tiles side-by-side */
+    border-radius: 16px;
+  }
 
-}
+  .overlay {
+    padding: 18px 14px;
+  }
 
+  .overlay h3 {
+    font-size: 26px;
+  }
+
+  .overlay p {
+    width: 100%;
+    font-size: 11px;
+    line-height: 1.4;
+    margin-top: 6px;
+  }
+
+  .overlay button {
+    width: 110px;
+    padding: 8px 12px;
+    font-size: 11px;
+    margin-top: 12px;
+  }
 }

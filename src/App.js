@@ -1,24 +1,33 @@
-import Hero from "./components/Hero";
-import Featured from "./components/Featured";
-import BestSeller from "./components/BestSeller";
-import Category from "./components/Category";
-import About from "./components/About";
-import WhyChooseUs from "./components/WhyChooseUs";
-import Newsletter from "./components/Newsletter";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { CartProvider } from "./context/CartContext";
+
+// Components
+import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import CartDrawer from "./components/CartDrawer";
+
+// Pages
+import Home from "./pages/Home";
+import Shop from "./pages/Shop";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   return (
-   <>
-  <Hero />
-  <Featured />
-  <BestSeller />
-  <Category />
-  <About />
-  <WhyChooseUs />
-  <Newsletter />
-  <Footer />
-</>
+    <CartProvider>
+      <Router>
+        <Navbar />
+        
+        {/* THIS WAS THE MISSING LINE THAT BRINGS THE DRAWER TO LIFE: */}
+        <CartDrawer />
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </CartProvider>
   );
 }
 

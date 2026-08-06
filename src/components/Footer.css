@@ -140,36 +140,23 @@
 
 }
 
-@media(max-width:950px){
+/* Update your existing @media(max-width: 650px) in Footer.css */
+@media (max-width: 650px) {
+  .footer {
+    padding: 60px 20px 30px; /* Shrunk top padding from 90px to 60px */
+  }
 
-.footer-container{
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
 
-grid-template-columns:1fr 1fr;
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
 
-}
-
-}
-
-@media(max-width:650px){
-
-.footer-container{
-
-grid-template-columns:1fr;
-
-}
-
-.footer-bottom{
-
-flex-direction:column;
-
-text-align:center;
-
-}
-
-.socials{
-
-justify-content:center;
-
-}
-
+  .socials {
+    justify-content: center;
+  }
 }
