@@ -1,197 +1,178 @@
-.category{
-
-    padding:100px 8%;
-
-    background:#f8f5f1;
-
+.category {
+  padding: 100px 8%;
+  background: #f8f5f1;
 }
 
-.category-heading{
-
-    text-align:center;
-
-    margin-bottom:70px;
-
+.category-heading {
+  text-align: center;
+  margin-bottom: 70px;
 }
 
-.category-heading p{
-
-    letter-spacing:6px;
-
-    color:#8b6b55;
-
-    font-size:15px;
-
-    font-family:Poppins,sans-serif;
-
+.category-heading p {
+  letter-spacing: 6px;
+  color: #8b6b55;
+  font-size: 15px;
+  font-family: Poppins, sans-serif;
 }
 
-.category-heading h2{
+.category-heading h2 {
+  margin-top: 15px;
 
-    margin-top:15px;
+  font-size: 58px;
 
-    font-size:58px;
+  color: #2c1b14;
 
-    color:#2c1b14;
-
-    font-family:"Cormorant Garamond",serif;
-
+  font-family: "Cormorant Garamond", serif;
 }
 
-.category-heading span{
+.category-heading span {
+  display: block;
 
-    display:block;
+  margin-top: 18px;
 
-    margin-top:18px;
+  color: #666;
 
-    color:#666;
+  font-size: 18px;
 
-    font-size:18px;
-
-    font-family:Poppins,sans-serif;
-
+  font-family: Poppins, sans-serif;
 }
 
-.category-grid{
+.category-grid {
+  display: grid;
 
-    display:grid;
+  grid-template-columns: repeat(2, 1fr);
 
-    grid-template-columns:repeat(2,1fr);
-
-    gap:35px;
-
+  gap: 35px;
 }
 
-.category-card{
+.category-card {
+  height: 420px;
 
-    height:420px;
+  border-radius: 22px;
 
-    border-radius:22px;
+  overflow: hidden;
 
-    overflow:hidden;
+  background-size: cover;
 
-    background-size:cover;
+  background-position: center;
 
-    background-position:center;
+  position: relative;
 
-    position:relative;
+  transition: 0.4s;
 
-    transition:.4s;
+  display: block;
 
+  text-decoration: none;
 }
 
-.category-card:hover{
-
-    transform:translateY(-10px);
-
+.category-card:hover {
+  transform: translateY(-10px);
 }
 
-.category-card::before{
+.category-card::before {
+  content: "";
 
-    content:"";
+  position: absolute;
 
-    position:absolute;
+  inset: 0;
 
-    inset:0;
+  background: rgba(0, 0, 0, 0.35);
 
-    background:rgba(0,0,0,.35);
-
-    transition:.3s;
-
+  transition: 0.3s;
 }
 
-.category-card:hover::before{
-
-    background:rgba(0,0,0,.55);
-
+.category-card:hover::before {
+  background: rgba(0, 0, 0, 0.55);
 }
 
-.overlay{
+.overlay {
+  position: absolute;
 
-    position:absolute;
+  inset: 0;
 
-    inset:0;
+  display: flex;
 
-    display:flex;
+  flex-direction: column;
 
-    flex-direction:column;
+  justify-content: flex-end;
 
-    justify-content:flex-end;
+  padding: 40px;
 
-    padding:40px;
+  color: white;
 
-    color:white;
-
-    z-index:2;
-
+  z-index: 2;
 }
 
-.overlay h3{
+.category-label {
+  font-family: Poppins, sans-serif;
 
-    font-size:48px;
+  font-size: 12px;
 
-    font-family:"Cormorant Garamond",serif;
+  letter-spacing: 4px;
 
+  margin-bottom: 8px;
+
+  opacity: 0.9;
 }
 
-.overlay p{
+.overlay h3 {
+  font-size: 48px;
 
-    margin-top:12px;
-
-    width:75%;
-
-    line-height:1.8;
-
-    font-family:Poppins,sans-serif;
-
+  font-family: "Cormorant Garamond", serif;
 }
 
-.overlay button{
+.overlay p {
+  margin-top: 12px;
 
-    width:170px;
+  width: 75%;
 
-    margin-top:25px;
+  line-height: 1.8;
 
-    background:white;
-
-    color:#222;
-
-    border:none;
-
-    border-radius:40px;
-
-    padding:15px;
-
-    cursor:pointer;
-
-    transition:.3s;
-
-    font-family:Poppins,sans-serif;
-
+  font-family: Poppins, sans-serif;
 }
 
-.overlay button:hover{
+.overlay-btn {
+  width: 170px;
 
-    background:#2c1b14;
+  margin-top: 25px;
 
-    color:white;
+  background: white;
 
+  color: #222;
+
+  border-radius: 40px;
+
+  padding: 15px;
+
+  transition: 0.3s;
+
+  font-family: Poppins, sans-serif;
+
+  text-align: center;
+
+  display: block;
 }
+
+.category-card:hover .overlay-btn {
+  background: #2c1b14;
+
+  color: white;
+}
+
 
 /* =========================================
-   MOBILE OVERRIDES (Replace existing @media)
+   MOBILE
 ========================================= */
-/* =========================================
-   CATEGORY MOBILE OVERRIDES (Bottom of Category.css)
-========================================= */
+
 @media (max-width: 900px) {
+
   .category {
     padding: 50px 16px;
   }
 
-  /* 2 Columns Side-by-Side on Phone */
   .category-grid {
     grid-template-columns: repeat(2, 1fr);
+
     gap: 14px;
   }
 
@@ -205,10 +186,12 @@
 
   .category-heading span {
     font-size: 15px;
+    line-height: 1.6;
   }
 
   .category-card {
-    height: 260px; /* Square tiles side-by-side */
+    height: 280px;
+
     border-radius: 16px;
   }
 
@@ -216,21 +199,50 @@
     padding: 18px 14px;
   }
 
+  .category-label {
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 5px;
+  }
+
   .overlay h3 {
-    font-size: 26px;
+    font-size: 27px;
   }
 
   .overlay p {
     width: 100%;
+
     font-size: 11px;
+
     line-height: 1.4;
+
     margin-top: 6px;
   }
 
-  .overlay button {
+  .overlay-btn {
     width: 110px;
+
     padding: 8px 12px;
+
     font-size: 11px;
+
     margin-top: 12px;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .category-card {
+    height: 250px;
+  }
+
+  .overlay h3 {
+    font-size: 24px;
+  }
+
+  .overlay p {
+    font-size: 10px;
   }
 }

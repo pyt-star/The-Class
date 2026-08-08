@@ -1,277 +1,345 @@
-/* ==========================
-   DESKTOP DEFAULT (Top of Hero.css)
-========================== */
+/* =========================================
+   HERO - DESKTOP
+========================================= */
+
 .hero {
   position: relative;
   width: 100%;
   height: calc(100vh - 84px);
+  min-height: 560px;
+
+  background-image: url("../assets/hero.png");
   background-size: cover;
-
-  /* Change this line from 'center' to anchor the bottle on the right: */
-  background-position: 85% center; 
-
+  background-position: 85% center;
   background-repeat: no-repeat;
+
   display: flex;
   align-items: center;
+
   padding-left: 8%;
+
   overflow: hidden;
-}/* ========================== */
-
-.hero-content{
-
-    max-width:500px;
-
-    z-index:2;
-
-    animation:fadeUp 1.2s ease;
-
 }
 
-/* ========================== */
-
-.hero-brand{
-
-    font-family:Poppins,sans-serif;
-
-    font-size:18px;
-
-    letter-spacing:10px;
-
-    color:#1f1b18;
-
-    margin-bottom:18px;
-
+.hero-content {
+  max-width: 500px;
+  z-index: 2;
+  animation: fadeUp 1.2s ease;
 }
 
-/* ========================== */
-
-.hero-line{
-
-    width:60px;
-
-    height:2px;
-
-    background:#b6945d;
-
-    margin-bottom:35px;
-
+.hero-brand {
+  font-family: Poppins, sans-serif;
+  font-size: clamp(12px, 1.3vw, 18px);
+  letter-spacing: 10px;
+  color: #1f1b18;
+  margin-bottom: 18px;
 }
 
-/* ========================== */
-
-.hero h1{
-
-    font-family:"Cormorant Garamond",serif;
-
-    font-size:90px;
-
-    line-height:.95;
-
-    font-weight:500;
-
-    color:#201712;
-
-    margin-bottom:35px;
-
+.hero-line {
+  width: 60px;
+  height: 2px;
+  background: #b6945d;
+  margin-bottom: 35px;
 }
 
-/* ========================== */
-
-.hero-text{
-
-    font-family:Poppins,sans-serif;
-
-    color:#453c36;
-
-    line-height:1.8;
-
-    font-size:20px;
-
-    margin-bottom:45px;
-
+.hero h1 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(42px, 6vw, 90px);
+  line-height: 0.95;
+  font-weight: 500;
+  color: #201712;
+  margin-bottom: 35px;
 }
 
-/* ========================== */
-
-.hero-btn{
-
-    background:#2d2018;
-
-    color:white;
-
-    border:none;
-
-    padding:22px 38px;
-
-    letter-spacing:3px;
-
-    font-size:14px;
-
-    font-family:Poppins,sans-serif;
-
-    cursor:pointer;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:25px;
-
-    transition:.35s;
-
+.hero-text {
+  font-family: Poppins, sans-serif;
+  color: #453c36;
+  line-height: 1.8;
+  font-size: clamp(15px, 1.3vw, 20px);
+  margin-bottom: 45px;
 }
 
-.hero-btn span{
+.hero-btn {
+  background: #2d2018;
+  color: white;
+  border: none;
 
-    font-size:22px;
+  padding: 22px 38px;
 
-    transition:.35s;
+  letter-spacing: 3px;
+  font-size: 14px;
 
+  font-family: Poppins, sans-serif;
+
+  display: flex;
+  align-items: center;
+
+  gap: 25px;
+
+  transition: 0.35s;
+
+  width: fit-content;
+
+  text-decoration: none;
 }
 
-.hero-btn:hover{
-
-    background:#7d614c;
-
+.hero-btn span {
+  font-size: 22px;
+  transition: 0.35s;
 }
 
-.hero-btn:hover span{
-
-    transform:translateX(8px);
-
+.hero-btn:hover {
+  background: #7d614c;
 }
 
-/* ========================== */
-
-.scroll-text{
-
-    position:absolute;
-
-    bottom:25px;
-
-    left:50%;
-
-    transform:translateX(-50%);
-
-    letter-spacing:8px;
-
-    font-size:13px;
-
-    font-family:Poppins,sans-serif;
-
-    color:#2c1b14;
-
+.hero-btn:hover span {
+  transform: translateX(8px);
 }
 
-/* ========================== */
-
-@keyframes fadeUp{
-
-from{
-
-opacity:0;
-
-transform:translateY(40px);
-
+.hero-mobile-image {
+  display: none;
 }
 
-to{
+.scroll-text {
+  position: absolute;
 
-opacity:1;
+  bottom: 25px;
+  left: 50%;
 
-transform:translateY(0);
+  transform: translateX(-50%);
 
+  letter-spacing: 8px;
+  font-size: 13px;
+
+  font-family: Poppins, sans-serif;
+
+  color: #2c1b14;
+
+  z-index: 3;
 }
 
-}
-
-/* ========================== */
-
-/* =========================================
-   HERO MOBILE OVERRIDES (Bottom of Hero.css)
-========================================= */
-/* =========================================
-   HERO MOBILE OVERRIDES (Bottom of Hero.css)
-========================================= */
-@media (max-width: 768px) {
-  @media (max-width: 768px) {
-  .hero {
-    padding: 15px 20px 0;
-    align-items: flex-start;
-    /* Changed from 75% to 88% to pull the full bottle into the screen */
-    background-position: 88% bottom;
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
   }
 
-  /* ... keep the rest of your mobile rules exactly as they are! */
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 992px) {
+  .hero {
+    padding-left: 6%;
+    background-position: 78% center;
+  }
+
   .hero-content {
-    max-width: 100%;
+    max-width: 420px;
+  }
+}
+
+
+/* =========================================
+   MOBILE HERO
+========================================= */
+
+@media (max-width: 768px) {
+
+  .hero {
     width: 100%;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+
+    height: auto;
+    min-height: 0;
+
+    padding: 30px 20px 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    /*
+      This color matches the warm tone of the hero image.
+      It also prevents an ugly white gap around the image.
+    */
+    background: #b9956d;
+
+    overflow: hidden;
+  }
+
+  .hero-content {
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0;
+
     padding: 0;
-    margin-top: 5px;
+
+    background: transparent;
+
     z-index: 2;
   }
 
   .hero-brand {
     font-size: 11px;
     letter-spacing: 5px;
-    margin-bottom: 6px;
-    color: #1f1b18;
+
+    margin-bottom: 12px;
+
+    color: #2c211a;
   }
 
-  /* Hide the gold line on mobile—it wastes 30px of vertical space! */
   .hero-line {
     display: none;
   }
 
-  /* Compact heading fits on 2 clean lines */
   .hero h1 {
-    font-size: 34px;
-    line-height: 1.05;
-    margin-bottom: 10px;
+    font-size: 36px;
+    line-height: 1;
+
+    margin-bottom: 14px;
+
     color: #201712;
   }
 
-  /* Tighter paragraph so it ends BEFORE the bottle cap */
   .hero-text {
+    max-width: 340px;
+
     font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    color: #3d342e;
-    max-width: 88%;
+    line-height: 1.55;
+
+    margin-bottom: 20px;
+
+    color: #3d3027;
   }
 
-  /* Sleek, compact button that doesn't block the bottle */
   .hero-btn {
-    width: auto;
-    padding: 12px 22px;
+    width: min(100%, 300px);
+
+    padding: 15px 20px;
+
+    justify-content: center;
+
     font-size: 11px;
+
     letter-spacing: 2px;
+
     gap: 15px;
   }
 
   .hero-btn span {
-    font-size: 16px;
+    font-size: 17px;
+  }
+
+  /*
+    IMPORTANT:
+
+    Instead of using background-size: cover on the entire
+    tall hero, the bottle gets its own image area.
+
+    The background is intentionally taller than the container.
+    This allows the whole bottle to remain visible.
+  */
+
+  .hero-mobile-image {
+    display: block;
+
+    width: calc(100% + 40px);
+
+    height: 440px;
+
+    margin-left: -20px;
+
+    margin-top: 12px;
+
+    background-repeat: no-repeat;
+
+    /*
+      Keeps the original image proportions while making
+      the bottle large enough for mobile.
+    */
+    background-size: auto 560px;
+
+    /*
+      Pushes the bottle toward the center/right without
+      cutting off its bottom.
+    */
+    background-position: 82% bottom;
+
+    background-color: #b9956d;
+
+    flex-shrink: 0;
   }
 
   .scroll-text {
-    bottom: 15px;
+    position: static;
+
+    transform: none;
+
+    margin: -2px auto 12px;
+
     font-size: 10px;
+
     letter-spacing: 5px;
+
+    color: #2c1b14;
   }
 }
 
+
+/* =========================================
+   SMALL PHONES
+========================================= */
+
 @media (max-width: 480px) {
+
+  .hero {
+    padding-top: 25px;
+  }
+
   .hero h1 {
-    font-size: 30px;
+    font-size: 32px;
+  }
+
+  .hero-text {
+    font-size: 12.5px;
+    max-width: 310px;
+  }
+
+  .hero-mobile-image {
+    height: 420px;
+
+    background-size: auto 540px;
+
+    background-position: 82% bottom;
+  }
+}
+
+
+/* =========================================
+   VERY SMALL PHONES
+========================================= */
+
+@media (max-width: 380px) {
+
+  .hero h1 {
+    font-size: 29px;
   }
 
   .hero-text {
     font-size: 12px;
-    margin-bottom: 14px;
+  }
+
+  .hero-mobile-image {
+    height: 390px;
+
+    background-size: auto 500px;
   }
 }

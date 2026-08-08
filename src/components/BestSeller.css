@@ -1,238 +1,263 @@
-.bestSeller{
-    width:100%;
-    padding:100px 8%;
-    background:#ffffff;
+/* =========================================
+   BEST SELLERS
+========================================= */
+
+.bestSeller {
+  width: 100%;
+  padding: 100px 8%;
+  background: #f8f5f1;
 }
 
-.best-heading{
-    text-align:center;
-    max-width:700px;
-    margin:auto;
+.best-heading {
+  text-align: center;
+  max-width: 700px;
+  margin: auto;
 }
 
-.best-heading .subtitle{
-    font-family:Poppins,sans-serif;
-    letter-spacing:6px;
-    color:#8b6b55;
-    font-size:15px;
-    margin-bottom:15px;
+.best-heading .subtitle {
+  font-family: Poppins, sans-serif;
+  letter-spacing: 6px;
+  color: #8b6b55;
+  font-size: 15px;
+  margin-bottom: 15px;
 }
 
-.best-heading h2{
-    font-family:"Cormorant Garamond",serif;
-    font-size:60px;
-    color:#2c1b14;
-    margin-bottom:20px;
+.best-heading h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 60px;
+  color: #2c1b14;
+  margin-bottom: 20px;
 }
 
-.best-heading .description{
-    font-family:Poppins,sans-serif;
-    color:#666;
-    line-height:1.8;
-    font-size:18px;
+.best-heading .description {
+  font-family: Poppins, sans-serif;
+  color: #666;
+  line-height: 1.8;
+  font-size: 18px;
 }
 
-.best-grid{
-    margin-top:70px;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:30px;
-}
-
-.best-card{
-    background:white;
-    border-radius:18px;
-    overflow:hidden;
-    position:relative;
-    box-shadow:0 15px 35px rgba(0,0,0,.08);
-    transition:.35s;
-}
-
-.best-card:hover{
-    transform:translateY(-10px);
-}
-
-.best-card img{
-    width:100%;
-    height:320px;
-    object-fit:cover;
-    transition:.4s;
-}
-
-.best-card:hover img{
-    transform:scale(1.06);
-}
-
-.heart{
-    position:absolute;
-    right:20px;
-    top:20px;
-
-    width:42px;
-    height:42px;
-
-    border-radius:50%;
-    background:white;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    box-shadow:0 5px 15px rgba(0,0,0,.1);
-
-    cursor:pointer;
-
-    transition:.3s;
-}
-
-.heart:hover{
-    background:#2c1b14;
-    color:white;
-}
-
-.best-badge{
-
-    position:absolute;
-
-    left:20px;
-    top:20px;
-
-    background:#2c1b14;
-
-    color:white;
-
-    padding:8px 16px;
-
-    border-radius:30px;
-
-    font-size:12px;
-
-    font-family:Poppins,sans-serif;
-
-}
-
-.best-content{
-    padding:25px;
-}
-
-.best-content h3{
-
-    font-family:"Cormorant Garamond",serif;
-
-    font-size:34px;
-
-    margin-bottom:12px;
-
-}
-
-.rating{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:4px;
-
-    color:#c28d2d;
-
-    margin-bottom:18px;
-
-}
-
-.rating span{
-
-    color:#777;
-
-    margin-left:8px;
-
-    font-size:14px;
-
-    font-family:Poppins,sans-serif;
-
-}
-
-.best-content h4{
-
-    font-size:24px;
-
-    color:#2c1b14;
-
-    margin-bottom:10px;
-
-}
-
-.best-content p{
-
-    color:#777;
-
-    margin-bottom:22px;
-
-    font-family:Poppins,sans-serif;
-
-}
-
-.best-content button{
-
-    width:100%;
-
-    padding:15px;
-
-    border:none;
-
-    border-radius:35px;
-
-    background:#2c1b14;
-
-    color:white;
-
-    font-family:Poppins,sans-serif;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    gap:10px;
-
-    cursor:pointer;
-
-    transition:.3s;
-
-}
-
-.best-content button:hover{
-
-    background:#8b6b55;
-
-}
 
 /* =========================================
-   MOBILE OVERRIDES (Replace existing @media)
+   PRODUCT GRID
 ========================================= */
+
+.best-grid {
+  margin-top: 70px;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 30px;
+}
+
+
 /* =========================================
-   BEST SELLER MOBILE OVERRIDES (Bottom of BestSeller.css)
+   CARD
 ========================================= */
+
+.best-card {
+  background: white;
+
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  position: relative;
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+
+  transition: 0.35s;
+}
+
+.best-card:hover {
+  transform: translateY(-10px);
+}
+
+
+/* =========================================
+   IMAGE
+========================================= */
+
+.best-image-wrapper {
+  position: relative;
+
+  width: 100%;
+
+  overflow: hidden;
+}
+
+.best-image-wrapper a {
+  display: block;
+}
+
+.best-card img {
+  width: 100%;
+
+  height: 360px;
+
+  object-fit: cover;
+
+  display: block;
+
+  transition: 0.35s;
+}
+
+.best-card:hover img {
+  transform: scale(1.05);
+}
+
+
+/* =========================================
+   BADGE
+========================================= */
+
+.best-badge {
+  position: absolute;
+
+  top: 20px;
+  left: 20px;
+
+  background: #2c1b14;
+
+  color: white;
+
+  padding: 8px 18px;
+
+  border-radius: 30px;
+
+  font-size: 12px;
+
+  font-family: Poppins, sans-serif;
+
+  z-index: 2;
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.best-content {
+  padding: 28px;
+}
+
+.best-content h3 {
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 34px;
+
+  color: #2c1b14;
+
+  margin-bottom: 10px;
+}
+
+.best-category {
+  color: #8b6b55;
+
+  font-family: Poppins, sans-serif;
+
+  margin-bottom: 18px;
+
+  font-size: 16px;
+}
+
+.best-price {
+  font-size: 22px;
+
+  font-weight: 600;
+
+  color: #2c1b14;
+
+  margin-bottom: 25px;
+
+  font-family: Poppins, sans-serif;
+}
+
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.best-view-btn {
+  width: 100%;
+
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 40px;
+
+  background: #2c1b14;
+
+  color: white;
+
+  cursor: pointer;
+
+  font-family: Poppins, sans-serif;
+
+  transition: 0.3s;
+
+  text-decoration: none;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+}
+
+.best-view-btn:hover {
+  background: #8b6b55;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
 @media (max-width: 1100px) {
+
   .best-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
 }
 
+
+/* =========================================
+   MOBILE
+========================================= */
+
 @media (max-width: 700px) {
+
   .bestSeller {
     padding: 50px 16px;
   }
 
-  /* 2 Columns Side-by-Side on Phone */
+  .best-heading h2 {
+    font-size: 36px;
+  }
+
+  .best-heading .description {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
   .best-grid {
     grid-template-columns: repeat(2, 1fr);
+
     gap: 14px;
+
     margin-top: 35px;
   }
 
+  .best-card {
+    border-radius: 16px;
+  }
+
   .best-card img {
-    height: 180px; /* Perfectly matched to Featured cards */
+    height: 180px;
   }
 
   .best-content {
@@ -241,56 +266,36 @@
 
   .best-content h3 {
     font-size: 20px;
-    margin-bottom: 6px;
+
+    margin-bottom: 5px;
   }
 
-  /* Scaled-down rating so 5 stars don't wrap */
-  .rating {
-    margin-bottom: 10px;
-    gap: 2px;
-  }
-
-  .rating svg {
-    font-size: 11px;
-  }
-
-  .rating span {
-    font-size: 11px;
-    margin-left: 4px;
-  }
-
-  .best-content h4 {
-    font-size: 16px;
-    margin-bottom: 4px;
-  }
-
-  .best-content p {
+  .best-category {
     font-size: 12px;
+
+    margin-bottom: 8px;
+  }
+
+  .best-price {
+    font-size: 16px;
+
     margin-bottom: 14px;
   }
 
-  .best-content button {
+  .best-view-btn {
     padding: 10px 8px;
+
     font-size: 11px;
-    gap: 6px;
-    border-radius: 25px;
+
+    letter-spacing: 1px;
   }
 
   .best-badge {
     top: 10px;
     left: 10px;
+
     padding: 5px 10px;
-    font-size: 10px;
-  }
 
-  .heart {
-    top: 10px;
-    right: 10px;
-    width: 32px;
-    height: 32px;
-  }
-
-  .best-heading h2 {
-    font-size: 36px;
+    font-size: 9px;
   }
 }

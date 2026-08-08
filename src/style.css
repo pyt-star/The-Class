@@ -4,11 +4,25 @@
   padding: 0;
 }
 
-html,
+html {
+  width: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
 body {
   width: 100%;
-  overflow-x: hidden; /* This stops the horizontal scrolling bug on mobile! */
+  overflow-x: hidden;
 }
-h1, p {
-  font-family: Lato;
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+.home-anchor {
+  scroll-margin-top: 90px;
 }

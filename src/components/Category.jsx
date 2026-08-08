@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Category.css";
 
 import men from "../assets/men.jpg";
@@ -9,23 +10,35 @@ import gift from "../assets/gift.jpg";
 const categories = [
   {
     title: "Men",
-    description: "Bold, confident fragrances crafted for the modern gentleman.",
+    label: "FOR MEN",
+    description:
+      "Bold, confident fragrances crafted for the modern gentleman.",
     image: men,
+    category: "Men",
   },
   {
     title: "Women",
-    description: "Elegant perfumes that celebrate beauty and individuality.",
+    label: "FOR WOMEN",
+    description:
+      "Elegant perfumes that celebrate beauty and individuality.",
     image: women,
+    category: "Women",
   },
   {
     title: "Unisex",
-    description: "Sophisticated scents designed to be shared by everyone.",
+    label: "FOR EVERYONE",
+    description:
+      "Sophisticated scents designed to be shared by everyone.",
     image: unisex,
+    category: "Unisex",
   },
   {
     title: "Gift Sets",
-    description: "Beautifully curated perfume collections for every occasion.",
+    label: "PERFECT GIFTS",
+    description:
+      "Beautifully curated perfume collections for every occasion.",
     image: gift,
+    category: "Gift Sets",
   },
 ];
 
@@ -37,7 +50,9 @@ export default function Category() {
 
         <p>SHOP BY CATEGORY</p>
 
-        <h2>Find Your Signature Fragrance</h2>
+        <h2>
+          Find Your Signature Fragrance
+        </h2>
 
         <span>
           Discover fragrances tailored to every personality and occasion.
@@ -49,7 +64,8 @@ export default function Category() {
 
         {categories.map((item, index) => (
 
-          <div
+          <Link
+            to={`/shop?category=${encodeURIComponent(item.category)}`}
             className="category-card"
             key={index}
             style={{
@@ -59,15 +75,25 @@ export default function Category() {
 
             <div className="overlay">
 
-              <h3>{item.title}</h3>
+              <span className="category-label">
+                {item.label}
+              </span>
 
-              <p>{item.description}</p>
+              <h3>
+                {item.title}
+              </h3>
 
-              <button>Explore →</button>
+              <p>
+                {item.description}
+              </p>
+
+              <span className="overlay-btn">
+                Explore →
+              </span>
 
             </div>
 
-          </div>
+          </Link>
 
         ))}
 

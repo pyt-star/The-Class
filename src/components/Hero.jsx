@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Hero.css";
 import hero from "../assets/hero.png";
 
@@ -29,10 +30,10 @@ export default function Hero() {
           impression.
         </p>
 
-        <button className="hero-btn">
+        <Link to="/shop" className="hero-btn">
           DISCOVER COLLECTION
           <span>→</span>
-        </button>
+        </Link>
 
       </div>
 

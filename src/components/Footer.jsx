@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 export default function Footer() {
@@ -6,9 +7,19 @@ export default function Footer() {
 
       <div className="footer-container">
 
+
+        {/* =================================
+            BRAND
+        ================================= */}
+
         <div className="footer-brand">
 
-          <h2>THE CLASS</h2>
+          <Link
+            to="/#home"
+            className="footer-logo"
+          >
+            THE CLASS
+          </Link>
 
           <p>
             Luxury fragrances crafted with timeless elegance,
@@ -17,42 +28,102 @@ export default function Footer() {
 
         </div>
 
+
+        {/* =================================
+            QUICK LINKS
+        ================================= */}
+
         <div className="footer-links">
 
-          <h3>Quick Links</h3>
+          <h3>
+            Quick Links
+          </h3>
 
-          <a href="/">Home</a>
-          <a href="/">Featured</a>
-          <a href="/">Best Sellers</a>
-          <a href="/">About</a>
+          <Link to="/#home">
+            Home
+          </Link>
+
+          <Link to="/shop">
+            Fragrances
+          </Link>
+
+          <Link to="/#best-sellers">
+            Best Sellers
+          </Link>
+
+          <Link to="/#shop-by-category">
+            Shop by Category
+          </Link>
 
         </div>
 
+
+        {/* =================================
+            COLLECTIONS
+        ================================= */}
+
         <div className="footer-links">
 
-          <h3>Collections</h3>
+          <h3>
+            Collections
+          </h3>
 
-          <a href="/">Men</a>
-          <a href="/">Women</a>
-          <a href="/">Unisex</a>
-          <a href="/">Gift Sets</a>
+          <Link to="/shop?category=Men">
+            Men
+          </Link>
+
+          <Link to="/shop?category=Women">
+            Women
+          </Link>
+
+          <Link to="/shop?category=Unisex">
+            Unisex
+          </Link>
+
+          <Link to="/shop?category=Gift%20Sets">
+            Gift Sets
+          </Link>
 
         </div>
 
+
+        {/* =================================
+            ABOUT / EXPLORE
+        ================================= */}
+
         <div className="footer-links">
 
-          <h3>Support</h3>
+          <h3>
+            Explore
+          </h3>
 
-          <a href="/">Contact</a>
-          <a href="/">Shipping</a>
-          <a href="/">Returns</a>
-          <a href="/">FAQs</a>
+          <Link to="/#our-story">
+            Our Story
+          </Link>
+
+          <Link to="/#why-the-class">
+            Why The Class
+          </Link>
+
+          <Link to="/#newsletter">
+            Newsletter
+          </Link>
+
+          <Link to="/shop">
+            Shop All
+          </Link>
 
         </div>
 
       </div>
 
+
       <hr />
+
+
+      {/* =================================
+          FOOTER BOTTOM
+      ================================= */}
 
       <div className="footer-bottom">
 
@@ -62,11 +133,17 @@ export default function Footer() {
 
         <div className="socials">
 
-          <a href="/">Instagram</a>
+          <span>
+            Instagram
+          </span>
 
-          <a href="/">Facebook</a>
+          <span>
+            Facebook
+          </span>
 
-          <a href="/">Pinterest</a>
+          <span>
+            Pinterest
+          </span>
 
         </div>
 

@@ -1,46 +1,42 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./BestSeller.css";
 
-import { FaHeart, FaStar, FaShoppingCart } from "react-icons/fa";
-
+import perfume1 from "../assets/perfume1.jpg";
 import bestseller1 from "../assets/bestseller1.jpg";
 import bestseller2 from "../assets/bestseller2.jpg";
 import bestseller3 from "../assets/bestseller3.jpg";
-import bestseller4 from "../assets/bestseller4.jpg";
 
 export default function BestSeller() {
+
   const products = [
     {
       id: 1,
-      image: bestseller1,
+      image: perfume1,
       name: "Noir Essence",
+      category: "Men",
       price: "₹2,499",
-      reviews: "142 Reviews",
-      size: "50ml",
-    },
-    {
-      id: 2,
-      image: bestseller2,
-      name: "Velvet Rose",
-      price: "₹2,999",
-      reviews: "108 Reviews",
-      size: "100ml",
-    },
-    {
-      id: 3,
-      image: bestseller3,
-      name: "Midnight Oud",
-      price: "₹3,499",
-      reviews: "95 Reviews",
-      size: "75ml",
     },
     {
       id: 4,
-      image: bestseller4,
+      image: bestseller1,
       name: "Golden Amber",
+      category: "Men",
       price: "₹2,799",
-      reviews: "131 Reviews",
-      size: "50ml",
+    },
+    {
+      id: 5,
+      image: bestseller2,
+      name: "Celestial Bloom",
+      category: "Women",
+      price: "₹3,199",
+    },
+    {
+      id: 6,
+      image: bestseller3,
+      name: "Santal Royale",
+      category: "Unisex",
+      price: "₹3,899",
     },
   ];
 
@@ -70,50 +66,43 @@ export default function BestSeller() {
 
           <div className="best-card" key={product.id}>
 
-            <div className="heart">
+            <div className="best-image-wrapper">
 
-              <FaHeart />
+              <Link to={`/product/${product.id}`}>
+
+                <img
+                  src={product.image}
+                  alt={product.name}
+                />
+
+              </Link>
+
+              <span className="best-badge">
+                BEST SELLER
+              </span>
 
             </div>
 
-            <span className="best-badge">
-
-              BEST SELLER
-
-            </span>
-
-            <img
-              src={product.image}
-              alt={product.name}
-            />
-
             <div className="best-content">
 
-              <h3>{product.name}</h3>
+              <h3>
+                {product.name}
+              </h3>
 
-              <div className="rating">
+              <p className="best-category">
+                {product.category}
+              </p>
 
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
+              <p className="best-price">
+                {product.price}
+              </p>
 
-                <span>{product.reviews}</span>
-
-              </div>
-
-              <h4>{product.price}</h4>
-
-              <p>{product.size}</p>
-
-              <button>
-
-                <FaShoppingCart />
-
-                Add To Cart
-
-              </button>
+              <Link
+                to={`/product/${product.id}`}
+                className="best-view-btn"
+              >
+                View Product
+              </Link>
 
             </div>
 
