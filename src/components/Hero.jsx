@@ -10,13 +10,12 @@ export default function Hero() {
         backgroundImage: `url(${hero})`,
       }}
     >
+      {/* TOP/LEFT: Text Content */}
       <div className="hero-content">
-
-        <p className="hero-brand">
-          THE CLASS
-        </p>
-
-        <div className="hero-line"></div>
+        <div className="hero-brand-container">
+          <p className="hero-brand">THE CLASS</p>
+          <div className="hero-line"></div>
+        </div>
 
         <h1>
           Crafted for
@@ -29,18 +28,19 @@ export default function Hero() {
           for those who leave an unforgettable
           impression.
         </p>
+      </div>
 
+      {/* BOTTOM/CENTER: Button and Scroll */}
+      <div className="hero-bottom-actions">
         <Link to="/shop" className="hero-btn">
           DISCOVER COLLECTION
           <span>→</span>
         </Link>
 
+        <div className="scroll-text">
+          SCROLL ↑
+        </div>
       </div>
-
-      <div className="scroll-text">
-        SCROLL
-      </div>
-
     </section>
   );
 }
