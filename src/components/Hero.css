@@ -1,31 +1,19 @@
 /* =========================================
    HERO - DESKTOP
 ========================================= */
-
 .hero {
   position: relative;
   width: 100%;
-  /* Fallback height */
   height: calc(100vh - 84px);
-  
-  /* 
-    DESKTOP CROP FIX:
-    This massive min-height ensures the container is always tall enough
-    so the cap and the bottom of the bottle are never cut off by the browser.
-  */
   min-height: 750px; 
-
   background-size: cover;
-  /* Centers vertically, pushes 80% to the right */
   background-position: 80% center; 
   background-repeat: no-repeat;
-  background-color: #dcbfa2; /* Fallback warm tone */
-
+  background-color: #dcbfa2; 
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centers content vertically */
+  justify-content: center; 
   padding-left: 8%;
-
   overflow: hidden;
   animation: fadeIn 0.8s ease;
 }
@@ -73,7 +61,6 @@
   margin-bottom: 40px;
 }
 
-/* On desktop, keep actions aligned left with the text */
 .hero-bottom-actions {
   display: flex;
   flex-direction: column;
@@ -140,7 +127,6 @@
 /* =========================================
    TABLET
 ========================================= */
-
 @media (max-width: 1024px) {
   .hero {
     padding-left: 6%;
@@ -152,23 +138,19 @@
 }
 
 /* =========================================
-   MOBILE HERO (Matches your ideal mockup)
+   MOBILE HERO
 ========================================= */
-
 @media (max-width: 768px) {
   .hero {
     width: 100%;
-    height: 100vh; /* Full screen height */
-    min-height: 650px;
+    height: 100vh; 
     
-    /* Top padding avoids navbar, bottom padding lifts off edge */
+    /* Forces the container to stretch taller so text and bottle separate */
+    min-height: 820px; 
+    
     padding: 20px 24px 20px; 
-
-    /* Frame the bottle perfectly in the center/bottom of phone screen */
-    background-position: 76% bottom;
+    background-position: 72% bottom;
     background-size: cover;
-
-    /* Magic layout: pushes text to top, actions to bottom, reveals bottle in middle */
     justify-content: space-between; 
     align-items: flex-start;
   }
@@ -176,28 +158,29 @@
   .hero-content {
     width: 100%;
     max-width: 100%;
-    margin-top: 10px; /* Slight breathing room from top */
+    margin-top: 70px; 
   }
 
   .hero-brand-container {
-    margin-bottom: 15px;
+    margin-bottom: 12px; 
   }
 
   .hero h1 {
-    font-size: 42px;
-    margin-bottom: 12px;
+    font-size: 38px; 
+    line-height: 1.1;
+    margin-bottom: 10px; 
   }
 
   .hero-text {
-    font-size: 14px;
-    max-width: 90%;
+    font-size: 13.5px;
+    line-height: 1.6;
+    max-width: 100%;
     margin-bottom: 0;
   }
 
-  /* Pushes the button and scroll text to the bottom of the screen */
   .hero-bottom-actions {
     width: 100%;
-    align-items: center; /* Center the button and scroll text */
+    align-items: center; 
     padding-bottom: 10px;
   }
 
@@ -206,10 +189,9 @@
     max-width: 320px;
     justify-content: center;
     padding: 16px 20px;
-    margin-bottom: 25px; /* Gap between button and scroll text */
+    margin-bottom: 25px; 
   }
 
-  /* Redefine scroll text for mobile so it stacks naturally below button */
   .scroll-text {
     position: static;
     transform: none;
@@ -220,10 +202,15 @@
 /* =========================================
    SMALL PHONES
 ========================================= */
-
 @media (max-width: 380px) {
+  .hero {
+    min-height: 760px; 
+  }
+  .hero-content {
+    margin-top: 65px; 
+  }
   .hero h1 {
-    font-size: 36px;
+    font-size: 34px;
   }
   .hero-text {
     font-size: 13px;
