@@ -16,6 +16,7 @@ import CartDrawer from "./components/CartDrawer";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -42,7 +43,6 @@ function ScrollManager() {
       });
     };
 
-    // Small delay gives React time to render the destination page.
     const timer = setTimeout(scrollToTarget, 50);
 
     return () => clearTimeout(timer);
@@ -65,6 +65,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Routes>
 
         <Footer />
