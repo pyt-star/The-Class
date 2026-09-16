@@ -1,0 +1,154 @@
+/* =================================
+   PRIVACY POLICY PAGE
+================================= */
+
+.privacy-policy {
+  background: #f8f5f0;
+  min-height: 100vh;
+  padding: 80px 20px 100px;
+  color: #21140f;
+}
+
+
+/* =================================
+   CONTENT CONTAINER
+================================= */
+
+.privacy-policy-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+
+/* =================================
+   MAIN TITLE
+================================= */
+
+.privacy-policy h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 52px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 0 0 25px;
+  text-align: center;
+}
+
+
+/* =================================
+   INTRODUCTION
+================================= */
+
+.privacy-policy .intro {
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.8;
+  color: #5c514c;
+  text-align: center;
+  max-width: 750px;
+  margin: 0 auto 60px;
+}
+
+
+/* =================================
+   SECTIONS
+================================= */
+
+.privacy-policy section {
+  margin-bottom: 42px;
+}
+
+
+/* =================================
+   SECTION HEADINGS
+================================= */
+
+.privacy-policy h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin: 0 0 14px;
+  color: #21140f;
+}
+
+
+/* =================================
+   PARAGRAPHS
+================================= */
+
+.privacy-policy p {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #5c514c;
+  margin: 0;
+}
+
+
+/* =================================
+   DIVIDER
+================================= */
+
+.privacy-policy .policy-divider {
+  width: 70px;
+  height: 1px;
+  background: #21140f;
+  margin: 0 auto 55px;
+  opacity: 0.5;
+}
+
+
+/* =================================
+   MOBILE
+================================= */
+
+@media (max-width: 768px) {
+
+  .privacy-policy {
+    padding: 55px 20px 70px;
+  }
+
+  .privacy-policy h1 {
+    font-size: 38px;
+  }
+
+  .privacy-policy .intro {
+    font-size: 15px;
+    margin-bottom: 45px;
+  }
+
+  .privacy-policy h2 {
+    font-size: 24px;
+  }
+
+  .privacy-policy p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .privacy-policy section {
+    margin-bottom: 35px;
+  }
+
+}
+
+
+/* =================================
+   SMALL MOBILE
+================================= */
+
+@media (max-width: 480px) {
+
+  .privacy-policy {
+    padding: 45px 18px 60px;
+  }
+
+  .privacy-policy h1 {
+    font-size: 32px;
+  }
+
+  .privacy-policy h2 {
+    font-size: 22px;
+  }
+
+}

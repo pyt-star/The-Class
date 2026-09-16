@@ -7,11 +7,7 @@ export default function Footer() {
 
       <div className="footer-container">
 
-
-        {/* =================================
-            BRAND
-        ================================= */}
-
+        {/* BRAND */}
         <div className="footer-brand">
 
           <Link
@@ -29,10 +25,7 @@ export default function Footer() {
         </div>
 
 
-        {/* =================================
-            QUICK LINKS
-        ================================= */}
-
+        {/* QUICK LINKS */}
         <div className="footer-links">
 
           <h3>
@@ -58,10 +51,7 @@ export default function Footer() {
         </div>
 
 
-        {/* =================================
-            COLLECTIONS
-        ================================= */}
-
+        {/* COLLECTIONS */}
         <div className="footer-links">
 
           <h3>
@@ -87,10 +77,7 @@ export default function Footer() {
         </div>
 
 
-        {/* =================================
-            ABOUT / EXPLORE
-        ================================= */}
-
+        {/* EXPLORE */}
         <div className="footer-links">
 
           <h3>
@@ -121,10 +108,7 @@ export default function Footer() {
       <hr />
 
 
-      {/* =================================
-          FOOTER BOTTOM
-      ================================= */}
-
+      {/* FOOTER BOTTOM */}
       <div className="footer-bottom">
 
         <p>
@@ -144,6 +128,10 @@ export default function Footer() {
           <span>
             Pinterest
           </span>
+
+          <Link to="/privacy-policy">
+            Privacy Policy
+          </Link>
 
         </div>
 
