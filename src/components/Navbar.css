@@ -1,25 +1,19 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Poppins:wght@300;400;500&display=swap");
 
 /* =========================================
    NAVBAR
 ========================================= */
-
 .navbar {
   position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   height: 84px;
-  box-sizing: border-box;
-
   background: #faf8f5;
   border-bottom: 1px solid rgba(32, 23, 18, 0.08);
-
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  display: flex;
   align-items: center;
-
+  justify-content: space-between;
   padding: 0 45px;
   z-index: 1000;
 }
@@ -27,36 +21,17 @@
 /* =========================================
    BUTTONS
 ========================================= */
-
 .menu-btn,
 .icon-btn {
   background: none;
   border: none;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 8px;
   color: #201712;
-
   transition: color 0.3s ease, transform 0.2s ease;
-}
-
-/* HAMBURGER - EXTREME LEFT */
-
-.menu-btn {
-  position: absolute;
-  left: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-}
-
-.menu-btn:hover {
-  transform: translateY(-50%);
-  color: #8b6b55;
 }
 
 .menu-btn svg,
@@ -65,6 +40,7 @@
   stroke-width: 1.5;
 }
 
+.menu-btn:hover,
 .icon-btn:hover {
   color: #8b6b55;
   transform: translateY(-1px);
@@ -73,65 +49,41 @@
 /* =========================================
    LOGO
 ========================================= */
-
 .navbar-logo {
-  grid-column: 2;
-
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: "Cormorant Garamond", serif;
   font-size: 32px;
   font-weight: 500;
   letter-spacing: 14px;
-
   color: #201712;
   text-decoration: none;
   white-space: nowrap;
-  text-align: center;
 }
 
 /* =========================================
-   RIGHT SIDE: SEARCH + ICONS
+   NAVBAR RIGHT & SEARCH (NEW)
 ========================================= */
-
 .navbar-right {
-  grid-column: 3;
-
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 16px;
-
-  min-width: 0;
+  gap: 20px;
 }
-
-/* =========================================
-   SEARCH BAR
-========================================= */
 
 .nav-search-container {
   position: relative;
-
-  width: clamp(200px, 22vw, 360px);
-  min-width: 0;
-  flex-shrink: 1;
+  width: 460px;
 }
 
 .nav-search-box {
   display: flex;
   align-items: center;
-
-  height: 48px;
-  box-sizing: border-box;
-
   background: rgba(32, 23, 18, 0.05);
   border: 1px solid transparent;
   border-radius: 30px;
-
-  padding: 0 16px;
-
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+  padding: 8px 14px;
+  transition: all 0.3s ease;
 }
 
 .nav-search-box.active {
@@ -142,22 +94,19 @@
 
 .nav-search-icon {
   color: #777;
-  font-size: 17px;
-  flex-shrink: 0;
-  margin-right: 9px;
+  font-size: 16px;
+  margin-right: 8px;
 }
 
 .nav-search-box input {
   flex: 1;
-  min-width: 0;
-
   background: transparent;
   border: none;
   outline: none;
-
   font-family: "Poppins", sans-serif;
   font-size: 13px;
   color: #201712;
+  width: 100%;
 }
 
 .nav-search-box input::placeholder {
@@ -169,51 +118,31 @@
   border: none;
   color: #888;
   cursor: pointer;
-
   display: flex;
   align-items: center;
-  justify-content: center;
-
   padding: 0;
-  flex-shrink: 0;
 }
-
-.nav-clear-btn svg {
-  font-size: 16px;
-}
-
-/* =========================================
-   SEARCH DROPDOWN
-========================================= */
 
 .nav-search-dropdown {
   position: absolute;
   top: calc(100% + 12px);
   right: 0;
-
-  width: 100%;
-  box-sizing: border-box;
-
+  width: 280px;
   background: #ffffff;
   border-radius: 12px;
-
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-
   overflow: hidden;
   display: flex;
   flex-direction: column;
-
   animation: fadeDown 0.2s ease;
   z-index: 2000;
 }
 
 .nav-search-item {
   padding: 12px 18px;
-
   cursor: pointer;
   display: flex;
   flex-direction: column;
-
   border-bottom: 1px solid #f2f2f2;
   transition: background 0.2s;
 }
@@ -243,7 +172,6 @@
 
 .nav-search-empty {
   padding: 16px;
-
   font-family: "Poppins", sans-serif;
   font-size: 13px;
   color: #777;
@@ -251,67 +179,45 @@
 }
 
 @keyframes fadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* =========================================
    NAV ICONS
 ========================================= */
-
 .navbar-icons {
   display: flex;
   align-items: center;
   gap: 16px;
-  flex-shrink: 0;
 }
 
 .cart-count {
-  position: absolute;
-  top: -3px;
-  right: -5px;
-
   background: #201712;
   color: #fff;
-
   font-size: 10px;
   font-weight: 600;
-
   min-width: 17px;
   height: 17px;
   padding: 0 4px;
-  box-sizing: border-box;
-
   border-radius: 50%;
-
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 3px;
 }
 
 /* =========================================
    OVERLAY
 ========================================= */
-
 .navbar-overlay {
   position: fixed;
   inset: 0;
-
   background: rgba(18, 14, 12, 0.45);
   backdrop-filter: blur(2px);
-
   z-index: 1500;
-
   opacity: 0;
   pointer-events: none;
-
   transition: opacity 0.35s ease;
 }
 
@@ -323,27 +229,19 @@
 /* =========================================
    SIDEBAR
 ========================================= */
-
 .sidebar {
   position: fixed;
   top: 0;
   left: -420px;
-
   width: 380px;
   height: 100vh;
-  box-sizing: border-box;
-
   background: #faf8f5;
   box-shadow: 10px 0 40px rgba(0, 0, 0, 0.12);
-
   padding: 40px;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-
   z-index: 2000;
 }
 
@@ -354,12 +252,10 @@
 /* =========================================
    SIDEBAR HEADER
 ========================================= */
-
 .sidebar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   border-bottom: 1px solid rgba(32, 23, 18, 0.1);
   padding-bottom: 25px;
 }
@@ -375,9 +271,7 @@
   background: none;
   border: none;
   cursor: pointer;
-
   color: #201712;
-
   display: flex;
   align-items: center;
   padding: 4px;
@@ -395,23 +289,19 @@
 /* =========================================
    NAVIGATION LINKS
 ========================================= */
-
 .sidebar-nav {
   display: flex;
   flex-direction: column;
   gap: 22px;
-
   margin: 40px 0 auto;
 }
 
 .sidebar-nav a {
   text-decoration: none;
   color: #201712;
-
   font-family: "Cormorant Garamond", serif;
   font-size: 31px;
   font-weight: 400;
-
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
@@ -423,11 +313,9 @@
 /* =========================================
    SIDEBAR FOOTER
 ========================================= */
-
 .sidebar-footer {
   border-top: 1px solid rgba(32, 23, 18, 0.1);
   padding-top: 25px;
-
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -443,7 +331,7 @@
 
 .sidebar-footer a {
   color: #453c36;
-  font-family: "Poppins", sans-serif;
+  font-family: Poppins, sans-serif;
   font-size: 14px;
   text-decoration: none;
 }
@@ -455,20 +343,13 @@
 /* =========================================
    MOBILE
 ========================================= */
-
 @media (max-width: 768px) {
   .navbar {
-    height: 64px;
     padding: 0 16px;
-
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    height: 64px;
   }
 
-  .menu-btn {
-    left: 16px;
-  }
-
-  /* Hide search bar on mobile */
+  /* Hide search bar on mobile screens so it doesn't clutter */
   .nav-search-container {
     display: none;
   }
@@ -476,7 +357,6 @@
   .navbar-logo {
     font-size: 20px;
     letter-spacing: 3px;
-
     max-width: 180px;
     text-align: center;
   }
@@ -506,36 +386,5 @@
 
   .sidebar-nav a {
     font-size: 25px;
-  }
-}
-
-/* =========================================
-   SMALL DESKTOP SCREENS
-========================================= */
-
-@media (min-width: 769px) and (max-width: 1100px) {
-  .navbar {
-    padding: 0 24px;
-  }
-
-  .menu-btn {
-    left: 12px;
-  }
-
-  .navbar-logo {
-    font-size: 28px;
-    letter-spacing: 9px;
-  }
-
-  .nav-search-container {
-    width: clamp(160px, 18vw, 260px);
-  }
-
-  .navbar-right {
-    gap: 10px;
-  }
-
-  .navbar-icons {
-    gap: 8px;
   }
 }
