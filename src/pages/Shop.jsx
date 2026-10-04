@@ -1,20 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import "./Shop.css";
-
-// Existing perfume assets
-import perfume1 from "../assets/perfume1.jpg";
-import perfume2 from "../assets/perfume2.jpg";
-import perfume3 from "../assets/perfume3.jpg";
-
-import bestseller1 from "../assets/bestseller1.jpg";
-import bestseller2 from "../assets/bestseller2.jpg";
-import bestseller3 from "../assets/bestseller3.jpg";
-
-// Gift Set images
-import gift1 from "../assets/gift1.png";
-import gift2 from "../assets/gift2.png";
-import gift3 from "../assets/gift3.png";
+import { getProducts } from "../productService";
 
 const CATEGORIES = [
   "All",
@@ -35,98 +22,27 @@ export default function Shop() {
       : "All"
   );
 
+  const [products, setProducts] = useState([]);
+
   // =========================================
-  // MASTER PRODUCT CATALOG
+  // LOAD PRODUCTS FROM SUPABASE
   // =========================================
 
-  const products = [
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await getProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error(
+          "Failed to load products:",
+          error
+        );
+      }
+    };
 
-    {
-      id: 1,
-      name: "Noir Essence",
-      category: "Men",
-      price: "₹2,499",
-      image: perfume1,
-      size: "50ml",
-    },
-
-    {
-      id: 2,
-      name: "Velvet Rose",
-      category: "Women",
-      price: "₹2,999",
-      image: perfume2,
-      size: "100ml",
-    },
-
-    {
-      id: 3,
-      name: "Midnight Oud",
-      category: "Unisex",
-      price: "₹3,499",
-      image: perfume3,
-      size: "75ml",
-    },
-
-    {
-      id: 4,
-      name: "Golden Amber",
-      category: "Men",
-      price: "₹2,799",
-      image: bestseller1,
-      size: "50ml",
-    },
-
-    {
-      id: 5,
-      name: "Celestial Bloom",
-      category: "Women",
-      price: "₹3,199",
-      image: bestseller2,
-      size: "100ml",
-    },
-
-    {
-      id: 6,
-      name: "Santal Royale",
-      category: "Unisex",
-      price: "₹3,899",
-      image: bestseller3,
-      size: "75ml",
-    },
-
-    // =========================================
-    // GIFT SETS
-    // =========================================
-
-    {
-      id: 7,
-      name: "His & Hers Duo Set",
-      category: "Gift Sets",
-      price: "₹5,499",
-      image: gift1,
-      size: "2 x 50ml",
-    },
-
-    {
-      id: 8,
-      name: "Royal Trio Gift Box",
-      category: "Gift Sets",
-      price: "₹6,999",
-      image: gift2,
-      size: "3 x 50ml",
-    },
-
-    {
-      id: 9,
-      name: "Discovery Miniature Set",
-      category: "Gift Sets",
-      price: "₹2,999",
-      image: gift3,
-      size: "4 x 15ml",
-    },
-
-  ];
+    loadProducts();
+  }, []);
 
   // =========================================
   // FILTER PRODUCTS
@@ -136,7 +52,8 @@ export default function Shop() {
     activeCategory === "All"
       ? products
       : products.filter(
-          (item) => item.category === activeCategory
+          (item) =>
+            item.category === activeCategory
         );
 
   return (
@@ -206,7 +123,9 @@ export default function Shop() {
               key={product.id}
             >
 
-              {/* PRODUCT IMAGE */}
+              {/* =================================
+                  PRODUCT IMAGE
+              ================================= */}
 
               <Link
                 to={`/product/${product.id}`}
@@ -225,7 +144,9 @@ export default function Shop() {
               </Link>
 
 
-              {/* PRODUCT INFORMATION */}
+              {/* =================================
+                  PRODUCT INFORMATION
+              ================================= */}
 
               <div className="shop-card-content">
 
@@ -234,13 +155,22 @@ export default function Shop() {
                 </h3>
 
                 <p className="shop-size">
-                  {product.size} Eau De Parfum
+                  {product.size
+                    ? `${product.size} Eau De Parfum`
+                    : "Eau De Parfum"}
                 </p>
 
                 <p className="shop-price">
-                  {product.price}
+                  ₹
+                  {Number(
+                    product.price
+                  ).toLocaleString("en-IN")}
                 </p>
 
+
+                {/* =================================
+                    VIEW PRODUCT
+                ================================= */}
 
                 <Link
                   to={`/product/${product.id}`}

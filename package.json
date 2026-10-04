@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "prismjs": "1.23.0",
     "react": "17.0.0",
     "react-dom": "17.0.0",

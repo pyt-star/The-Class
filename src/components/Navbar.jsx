@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -8,34 +7,24 @@ import {
   FiShoppingBag,
   FiX,
   FiSearch,
+  FiUser,
+  FiLogOut,
 } from "react-icons/fi";
 
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import { getProducts } from "../productService";
 import "./Navbar.css";
-
-/* =========================================
-   MOCK CATALOG FOR GLOBAL SEARCH
-========================================= */
-
-const searchCatalog = [
-  { id: 1, name: "Noir Essence", category: "Men" },
-  { id: 2, name: "Velvet Rose", category: "Women" },
-  { id: 3, name: "Midnight Oud", category: "Unisex" },
-  { id: 4, name: "Golden Amber", category: "Men" },
-  { id: 5, name: "Celestial Bloom", category: "Women" },
-  { id: 6, name: "Santal Royale", category: "Unisex" },
-  { id: 7, name: "French Essence", category: "Luxury" },
-];
-
-/* =========================================
-   NAVBAR COMPONENT
-========================================= */
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
 
   const { totalItems, setIsCartOpen } = useCart();
+  const { user, isAuthenticated, userInitial, logout } = useAuth();
   const navigate = useNavigate();
+
+  const accountRef = useRef(null);
 
   /* =========================================
      SEARCH STATE
@@ -43,12 +32,30 @@ export default function Navbar() {
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [searchCatalog, setSearchCatalog] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
 
   const searchRef = useRef(null);
 
   /* =========================================
-     SEARCH HANDLERS
+     LOAD PRODUCTS FROM SUPABASE
+  ========================================= */
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const products = await getProducts();
+        setSearchCatalog(products);
+      } catch (error) {
+        console.error("Failed to load products for search:", error);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  /* =========================================
+     SEARCH HANDLER
   ========================================= */
 
   const handleSearchChange = (e) => {
@@ -58,7 +65,9 @@ export default function Navbar() {
 
     if (value.trim().length > 0) {
       const filtered = searchCatalog.filter((product) =>
-        product.name.toLowerCase().includes(value.toLowerCase())
+        product.name
+          .toLowerCase()
+          .includes(value.toLowerCase())
       );
 
       setResults(filtered);
@@ -79,7 +88,7 @@ export default function Navbar() {
   };
 
   /* =========================================
-     CLOSE SEARCH WHEN CLICKING OUTSIDE
+     CLOSE SEARCH & ACCOUNT WHEN CLICKING OUTSIDE
   ========================================= */
 
   useEffect(() => {
@@ -90,12 +99,22 @@ export default function Navbar() {
       ) {
         setIsFocused(false);
       }
+
+      if (
+        accountRef.current &&
+        !accountRef.current.contains(event.target)
+      ) {
+        setAccountMenuOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
     };
   }, []);
 
@@ -108,6 +127,7 @@ export default function Navbar() {
       if (e.key === "Escape") {
         setMenuOpen(false);
         setIsFocused(false);
+        setAccountMenuOpen(false);
       }
     };
 
@@ -131,7 +151,7 @@ export default function Navbar() {
   }, [menuOpen]);
 
   /* =========================================
-     MENU HANDLERS
+     MENU HANDLER
   ========================================= */
 
   const closeMenu = () => {
@@ -149,6 +169,7 @@ export default function Navbar() {
       ================================= */}
 
       <header className="navbar">
+
         {/* MENU BUTTON */}
 
         <button
@@ -169,12 +190,16 @@ export default function Navbar() {
           THE CLASS
         </Link>
 
-        {/* RIGHT SIDE: SEARCH + ICONS */}
+        {/* RIGHT SIDE */}
 
         <div className="navbar-right">
+
           {/* SEARCH BAR */}
 
-          <div className="nav-search-container" ref={searchRef}>
+          <div
+            className="nav-search-container"
+            ref={searchRef}
+          >
             <div
               className={`nav-search-box ${
                 isFocused ? "active" : ""
@@ -207,16 +232,22 @@ export default function Navbar() {
 
             {isFocused && query.trim().length > 0 && (
               <div className="nav-search-dropdown">
+
                 {results.length > 0 ? (
                   results.map((item) => (
                     <div
                       key={item.id}
                       className="nav-search-item"
-                      onClick={() => handleProductClick(item.id)}
+                      onClick={() =>
+                        handleProductClick(item.id)
+                      }
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
+                        if (
+                          e.key === "Enter" ||
+                          e.key === " "
+                        ) {
                           handleProductClick(item.id);
                         }
                       }}
@@ -235,6 +266,7 @@ export default function Navbar() {
                     No fragrances found.
                   </div>
                 )}
+
               </div>
             )}
           </div>
@@ -242,6 +274,7 @@ export default function Navbar() {
           {/* NAVIGATION ICONS */}
 
           <div className="navbar-icons">
+
             {/* WISHLIST */}
 
             <button
@@ -272,8 +305,107 @@ export default function Navbar() {
                   {totalItems}
                 </span>
               )}
+
             </button>
+
+            {/* ACCOUNT CIRCLE */}
+
+            <div className="nav-account-container" ref={accountRef}>
+              <button
+                className={`account-circle-btn ${
+                  isAuthenticated ? "logged-in" : ""
+                }`}
+                onClick={() => setAccountMenuOpen((prev) => !prev)}
+                aria-label={
+                  isAuthenticated
+                    ? `Account: ${user?.name || "User"}`
+                    : "Account & Sign In"
+                }
+                title={
+                  isAuthenticated
+                    ? `Account (${user?.name || user?.email})`
+                    : "Sign In / Register"
+                }
+                type="button"
+              >
+                {isAuthenticated ? (
+                  <span className="account-initial">{userInitial}</span>
+                ) : (
+                  <FiUser className="account-icon" />
+                )}
+              </button>
+
+              {/* ACCOUNT DROPDOWN */}
+              {accountMenuOpen && (
+                <div className="nav-account-dropdown">
+                  {isAuthenticated ? (
+                    <>
+                      <div className="nav-dropdown-header">
+                        <span className="dropdown-label">Signed in as</span>
+                        <strong className="dropdown-username">
+                          {user?.name || "Member"}
+                        </strong>
+                        <span className="dropdown-email">{user?.email}</span>
+                      </div>
+
+                      <div className="nav-dropdown-divider" />
+
+                      <Link
+                        to="/account"
+                        className="nav-dropdown-item"
+                        onClick={() => setAccountMenuOpen(false)}
+                      >
+                        <FiUser /> My Account & Orders
+                      </Link>
+
+                      <button
+                        className="nav-dropdown-item logout-item"
+                        onClick={async () => {
+                          setAccountMenuOpen(false);
+                          await logout();
+                          navigate("/");
+                        }}
+                        type="button"
+                      >
+                        <FiLogOut /> Sign Out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="nav-dropdown-header">
+                        <strong className="dropdown-username">
+                          Welcome to The Class
+                        </strong>
+                        <span className="dropdown-email">
+                          Access your bespoke scents & orders
+                        </span>
+                      </div>
+
+                      <div className="nav-dropdown-divider" />
+
+                      <Link
+                        to="/login"
+                        className="nav-dropdown-btn primary"
+                        onClick={() => setAccountMenuOpen(false)}
+                      >
+                        Sign In
+                      </Link>
+
+                      <Link
+                        to="/register"
+                        className="nav-dropdown-btn secondary"
+                        onClick={() => setAccountMenuOpen(false)}
+                      >
+                        Create Account
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
           </div>
+
         </div>
       </header>
 
@@ -293,12 +425,16 @@ export default function Navbar() {
       ================================= */}
 
       <aside
-        className={`sidebar ${menuOpen ? "show" : ""}`}
+        className={`sidebar ${
+          menuOpen ? "show" : ""
+        }`}
         aria-hidden={!menuOpen}
       >
+
         {/* SIDEBAR HEADER */}
 
         <div className="sidebar-header">
+
           <span className="sidebar-brand">
             THE CLASS
           </span>
@@ -311,11 +447,13 @@ export default function Navbar() {
           >
             <FiX />
           </button>
+
         </div>
 
         {/* NAVIGATION LINKS */}
 
         <nav className="sidebar-nav">
+
           <Link to="/#home" onClick={closeMenu}>
             Home
           </Link>
@@ -324,34 +462,63 @@ export default function Navbar() {
             Fragrances
           </Link>
 
-          <Link to="/#best-sellers" onClick={closeMenu}>
+          <Link
+            to="/#best-sellers"
+            onClick={closeMenu}
+          >
             Best Sellers
           </Link>
 
-          <Link to="/#shop-by-category" onClick={closeMenu}>
+          <Link
+            to="/#shop-by-category"
+            onClick={closeMenu}
+          >
             Shop by Category
           </Link>
 
-          <Link to="/#our-story" onClick={closeMenu}>
+          <Link
+            to="/#our-story"
+            onClick={closeMenu}
+          >
             Our Story
           </Link>
 
-          <Link to="/#why-the-class" onClick={closeMenu}>
+          <Link
+            to="/#why-the-class"
+            onClick={closeMenu}
+          >
             Why The Class
           </Link>
+
+          {isAuthenticated ? (
+            <Link to="/account" onClick={closeMenu}>
+              My Account
+            </Link>
+          ) : (
+            <Link to="/login" onClick={closeMenu}>
+              Sign In / Register
+            </Link>
+          )}
+
         </nav>
 
         {/* SIDEBAR FOOTER */}
 
         <div className="sidebar-footer">
+
           <p className="footer-title">
             STAY CONNECTED
           </p>
 
-          <Link to="/#newsletter" onClick={closeMenu}>
+          <Link
+            to="/#newsletter"
+            onClick={closeMenu}
+          >
             Newsletter
           </Link>
+
         </div>
+
       </aside>
     </>
   );

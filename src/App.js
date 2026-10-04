@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { useEffect } from "react";
 import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./context/AuthContext";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -17,6 +18,10 @@ import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Checkout from "./pages/Checkout";
+import Account from "./pages/Account";
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -53,24 +58,30 @@ function ScrollManager() {
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <ScrollManager />
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <ScrollManager />
 
-        <Navbar />
+          <Navbar />
 
-        <CartDrawer />
+          <CartDrawer />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/account" element={<Account />} />
+          </Routes>
 
-        <Footer />
-      </Router>
-    </CartProvider>
+          <Footer />
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,44 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./BestSeller.css";
 
-import perfume1 from "../assets/perfume1.jpg";
-import bestseller1 from "../assets/bestseller1.jpg";
-import bestseller2 from "../assets/bestseller2.jpg";
-import bestseller3 from "../assets/bestseller3.jpg";
+import { getProducts } from "../productService";
 
 export default function BestSeller() {
+  const [products, setProducts] = useState([]);
 
-  const products = [
-    {
-      id: 1,
-      image: perfume1,
-      name: "Noir Essence",
-      category: "Men",
-      price: "₹2,499",
-    },
-    {
-      id: 4,
-      image: bestseller1,
-      name: "Golden Amber",
-      category: "Men",
-      price: "₹2,799",
-    },
-    {
-      id: 5,
-      image: bestseller2,
-      name: "Celestial Bloom",
-      category: "Women",
-      price: "₹3,199",
-    },
-    {
-      id: 6,
-      image: bestseller3,
-      name: "Santal Royale",
-      category: "Unisex",
-      price: "₹3,899",
-    },
-  ];
+  useEffect(() => {
+    const loadBestSellers = async () => {
+      try {
+        const data = await getProducts();
+
+        const bestSellers = data.filter(
+          (product) => product.is_best_seller === 1
+        );
+
+        setProducts(bestSellers);
+      } catch (error) {
+        console.error(
+          "Failed to load best sellers:",
+          error
+        );
+      }
+    };
+
+    loadBestSellers();
+  }, []);
 
   return (
     <section className="bestSeller">
@@ -64,11 +52,16 @@ export default function BestSeller() {
 
         {products.map((product) => (
 
-          <div className="best-card" key={product.id}>
+          <div
+            className="best-card"
+            key={product.id}
+          >
 
             <div className="best-image-wrapper">
 
-              <Link to={`/product/${product.id}`}>
+              <Link
+                to={`/product/${product.id}`}
+              >
 
                 <img
                   src={product.image}
@@ -94,7 +87,7 @@ export default function BestSeller() {
               </p>
 
               <p className="best-price">
-                {product.price}
+                ₹{Number(product.price).toLocaleString("en-IN")}
               </p>
 
               <Link

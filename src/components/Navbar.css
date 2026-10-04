@@ -297,6 +297,182 @@
 }
 
 /* =========================================
+   ACCOUNT CIRCLE BUTTON & DROPDOWN
+========================================= */
+
+.nav-account-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.account-circle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #201712;
+  background: transparent;
+  color: #201712;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.account-circle-btn:hover {
+  background: #201712;
+  color: #faf8f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(32, 23, 18, 0.15);
+}
+
+.account-circle-btn svg {
+  font-size: 17px;
+}
+
+.account-circle-btn.logged-in {
+  background: #201712;
+  color: #faf8f5;
+  border: 1.5px solid #8b6b55;
+  box-shadow: 0 2px 10px rgba(139, 107, 85, 0.25);
+}
+
+.account-circle-btn.logged-in:hover {
+  background: #8b6b55;
+  border-color: #8b6b55;
+}
+
+.account-initial {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Account Dropdown */
+.nav-account-dropdown {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  width: 250px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(32, 23, 18, 0.12);
+  border: 1px solid rgba(32, 23, 18, 0.08);
+  padding: 16px;
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeDown 0.2s ease;
+}
+
+.nav-dropdown-header {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 6px;
+}
+
+.dropdown-label {
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+}
+
+.dropdown-username {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #201712;
+}
+
+.dropdown-email {
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  color: #777;
+  word-break: break-all;
+}
+
+.nav-dropdown-divider {
+  height: 1px;
+  background: rgba(32, 23, 18, 0.08);
+  margin: 4px 0 8px;
+}
+
+.nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 12.5px;
+  color: #201712;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-dropdown-item:hover {
+  background: #faf8f5;
+  color: #8b6b55;
+}
+
+.nav-dropdown-item.logout-item {
+  color: #b91c1c;
+}
+
+.nav-dropdown-item.logout-item:hover {
+  background: #fdf2f2;
+  color: #991b1b;
+}
+
+.nav-dropdown-btn {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.nav-dropdown-btn.primary {
+  background: #201712;
+  color: #faf8f5;
+  margin-bottom: 4px;
+}
+
+.nav-dropdown-btn.primary:hover {
+  background: #8b6b55;
+}
+
+.nav-dropdown-btn.secondary {
+  background: transparent;
+  border: 1px solid rgba(32, 23, 18, 0.15);
+  color: #201712;
+}
+
+.nav-dropdown-btn.secondary:hover {
+  background: #faf8f5;
+  border-color: #8b6b55;
+}
+
+/* =========================================
    OVERLAY
 ========================================= */
 

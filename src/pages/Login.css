@@ -1,0 +1,295 @@
+/* =========================================
+   AUTH PAGES (LOGIN & REGISTER)
+========================================= */
+
+.auth-page {
+  min-height: calc(100vh - 84px);
+  background: #faf8f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  box-sizing: border-box;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Checkout Notice Banner */
+.auth-notice-banner {
+  background: #f4efe9;
+  border: 1px solid rgba(139, 107, 85, 0.25);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  color: #201712;
+  box-shadow: 0 4px 15px rgba(32, 23, 18, 0.04);
+  animation: fadeIn 0.3s ease;
+}
+
+.auth-notice-banner .notice-icon {
+  font-size: 22px;
+  color: #8b6b55;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.auth-notice-banner strong {
+  display: block;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8b6b55;
+  margin-bottom: 2px;
+}
+
+.auth-notice-banner span {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #453c36;
+  line-height: 1.45;
+}
+
+/* Card Container */
+.auth-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 44px 38px;
+  box-shadow: 0 15px 40px rgba(32, 23, 18, 0.06);
+  border: 1px solid rgba(32, 23, 18, 0.06);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-eyebrow {
+  display: block;
+  font-family: "Poppins", sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: #8b6b55;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.auth-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 34px;
+  font-weight: 500;
+  color: #201712;
+  margin: 0 0 10px;
+  letter-spacing: 1px;
+}
+
+.auth-subtitle {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #777;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Alerts */
+.auth-alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 12.5px;
+  line-height: 1.4;
+  margin-bottom: 22px;
+}
+
+.auth-alert.error {
+  background: #fdf2f2;
+  border: 1px solid #f8b4b4;
+  color: #9b1c1c;
+}
+
+.auth-alert.success {
+  background: #f3faf7;
+  border: 1px solid #a3e6cd;
+  color: #0e7448;
+}
+
+/* Form Styles */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group label {
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #33261f;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.forgot-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  font-size: 11.5px;
+  color: #8b6b55;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+  color: #201712;
+  text-decoration: underline;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  color: #999;
+  font-size: 17px;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.input-wrapper input {
+  width: 100%;
+  height: 48px;
+  box-sizing: border-box;
+  background: #faf8f5;
+  border: 1px solid rgba(32, 23, 18, 0.12);
+  border-radius: 10px;
+  padding: 0 16px 0 46px;
+  font-family: "Poppins", sans-serif;
+  font-size: 13.5px;
+  color: #201712;
+  outline: none;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.input-wrapper input:focus {
+  background: #ffffff;
+  border-color: #8b6b55;
+  box-shadow: 0 0 0 3px rgba(139, 107, 85, 0.12);
+}
+
+.input-wrapper input:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+  color: #8b6b55;
+}
+
+/* Submit Button */
+.auth-submit-btn {
+  margin-top: 10px;
+  height: 50px;
+  background: #201712;
+  color: #faf8f5;
+  border: 1px solid #201712;
+  border-radius: 10px;
+  font-family: "Poppins", sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-submit-btn:hover {
+  background: #8b6b55;
+  border-color: #8b6b55;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 107, 85, 0.25);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.auth-spinner-text {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+
+/* Switcher / Footer */
+.auth-footer-switch {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(32, 23, 18, 0.08);
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.switch-link {
+  color: #8b6b55;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.switch-link:hover {
+  color: #201712;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 540px) {
+  .auth-card {
+    padding: 32px 22px;
+  }
+
+  .auth-title {
+    font-size: 28px;
+  }
+}
