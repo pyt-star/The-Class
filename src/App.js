@@ -1,3 +1,4 @@
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -22,6 +23,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Checkout from "./pages/Checkout";
 import Account from "./pages/Account";
+import ResetPassword from "./pages/ResetPassword";
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -56,29 +58,44 @@ function ScrollManager() {
   return null;
 }
 
+function AppContent() {
+  const location = useLocation();
+  const isResetPasswordPage = location.pathname === "/reset-password";
+
+  return (
+    <>
+      <ScrollManager />
+
+      {!isResetPasswordPage && <Navbar />}
+
+      {!isResetPasswordPage && <CartDrawer />}
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/reset-password"
+          element={<ResetPassword />}
+        />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/account" element={<Account />} />
+      </Routes>
+
+      {!isResetPasswordPage && <Footer />}
+    </>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
-          <ScrollManager />
-
-          <Navbar />
-
-          <CartDrawer />
-
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/account" element={<Account />} />
-          </Routes>
-
-          <Footer />
+          <AppContent />
         </Router>
       </CartProvider>
     </AuthProvider>
