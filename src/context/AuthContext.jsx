@@ -25,9 +25,34 @@ function formatUser(user) {
   };
 }
 
+const USER_CACHE_KEY = "the_class_user_session";
+
+function getCachedUser() {
+  try {
+    const raw = localStorage.getItem(USER_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(getCachedUser);
+  const [loading, setLoading] = useState(() => !getCachedUser());
+
+  const saveUser = useCallback((rawUser) => {
+    const formatted = formatUser(rawUser);
+    setUser(formatted);
+    try {
+      if (formatted) {
+        localStorage.setItem(USER_CACHE_KEY, JSON.stringify(formatted));
+      } else {
+        localStorage.removeItem(USER_CACHE_KEY);
+      }
+    } catch (e) {
+      console.warn("Could not cache user session:", e);
+    }
+  }, []);
 
   // Check the existing Supabase session and listen for auth changes.
   useEffect(() => {
@@ -37,7 +62,7 @@ export function AuthProvider({ children }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (mounted) {
-        setUser(formatUser(session?.user ?? null));
+        saveUser(session?.user ?? null);
         setLoading(false);
       }
     });
@@ -49,12 +74,12 @@ export function AuthProvider({ children }) {
         if (error) throw error;
 
         if (mounted) {
-          setUser(formatUser(data.session?.user ?? null));
+          saveUser(data.session?.user ?? null);
         }
       } catch (error) {
         console.error("Unable to check login session:", error);
 
-        if (mounted) setUser(null);
+        if (mounted) saveUser(null);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -66,7 +91,7 @@ export function AuthProvider({ children }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [saveUser]);
 
   // LOGIN
   const login = useCallback(async (email, password) => {
@@ -80,7 +105,7 @@ export function AuthProvider({ children }) {
         return { success: false, error: error.message };
       }
 
-      setUser(formatUser(data.user));
+      saveUser(data.user);
 
       return { success: true };
     } catch (error) {
@@ -89,7 +114,7 @@ export function AuthProvider({ children }) {
         error: error.message || "Unable to sign in. Please try again.",
       };
     }
-  }, []);
+  }, [saveUser]);
 
   // REGISTER
   const register = useCallback(async (name, email, password) => {
@@ -111,12 +136,12 @@ export function AuthProvider({ children }) {
       // If email confirmation is enabled, the user may not
       // have a session until they confirm their email.
       if (data.session && data.user) {
-        setUser(formatUser(data.user));
+        saveUser(data.user);
 
         return { success: true, needsEmailConfirmation: false };
       }
 
-      setUser(null);
+      saveUser(null);
 
       return {
         success: true,
@@ -128,20 +153,20 @@ export function AuthProvider({ children }) {
         error: error.message || "Registration failed. Please try again.",
       };
     }
-  }, []);
+  }, [saveUser]);
 
   // LOGOUT
   const logout = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
 
+    saveUser(null);
+
     if (error) {
       return { success: false, error: error.message };
     }
 
-    setUser(null);
-
     return { success: true };
-  }, []);
+  }, [saveUser]);
 
   // USER INITIAL
   const userInitial = user

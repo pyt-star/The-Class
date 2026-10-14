@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "./Hero.css";
 import hero from "../assets/hero.png";
+import hero_2 from "../assets/Hero_Background.png"
 
 export default function Hero() {
   return (
@@ -36,9 +37,7 @@ export default function Hero() {
           DISCOVER COLLECTION
           <span>→</span>
         </Link>
-
-        
       </div>
     </section>
   );
-}
+} 

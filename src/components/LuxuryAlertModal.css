@@ -1,0 +1,313 @@
+/* =========================================
+   LUXURY ALERT MODAL
+========================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap");
+
+/* OVERLAY */
+.luxury-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(18, 14, 10, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: modalOverlayIn 0.22s ease;
+}
+
+@keyframes modalOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* DIALOG */
+.luxury-modal-dialog {
+  width: 100%;
+  max-width: 420px;
+  background: #faf8f5;
+  border-radius: 20px;
+  box-shadow:
+    0 32px 64px rgba(18, 14, 10, 0.22),
+    0 8px 24px rgba(18, 14, 10, 0.12),
+    0 0 0 1px rgba(139, 107, 85, 0.12);
+  overflow: hidden;
+  animation: modalDialogIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes modalDialogIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* HEADER BAR */
+.luxury-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #201712;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.luxury-modal-brand-tag {
+  font-family: "Poppins", sans-serif;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(250, 248, 245, 0.65);
+}
+
+.luxury-modal-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(250, 248, 245, 0.5);
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  font-size: 17px;
+}
+
+.luxury-modal-close-btn:hover {
+  color: #faf8f5;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(90deg);
+}
+
+/* CONTENT */
+.luxury-modal-content {
+  padding: 28px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+/* ICON BADGE */
+.luxury-modal-icon-badge {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0e8df, #faf8f5);
+  border: 1.5px solid rgba(139, 107, 85, 0.2);
+  margin-bottom: 4px;
+}
+
+.modal-icon {
+  font-size: 24px;
+}
+
+.modal-icon.cart-icon {
+  color: #8b6b55;
+}
+
+.modal-icon.success-icon {
+  color: #0e7448;
+}
+
+.modal-icon.error-icon {
+  color: #9b1c1c;
+}
+
+.modal-icon.info-icon {
+  color: #8b6b55;
+}
+
+/* TITLE */
+.luxury-modal-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 26px;
+  font-weight: 500;
+  color: #201712;
+  margin: 0;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+/* MESSAGE */
+.luxury-modal-message {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #6b5d54;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 320px;
+}
+
+/* PRODUCT CARD PREVIEW */
+.luxury-modal-product-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(32, 23, 18, 0.09);
+  border-radius: 12px;
+  padding: 12px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  margin-top: 6px;
+  box-shadow: 0 4px 14px rgba(32, 23, 18, 0.04);
+}
+
+.modal-product-thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f0ece6;
+  border: 1px solid rgba(32, 23, 18, 0.07);
+}
+
+.modal-product-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.modal-product-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #201712;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-product-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  color: #9c8578;
+  letter-spacing: 0.3px;
+}
+
+.meta-bullet {
+  opacity: 0.4;
+}
+
+.modal-product-price {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #201712;
+  margin: 2px 0 0;
+  letter-spacing: 0.3px;
+}
+
+/* ACTIONS */
+.luxury-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 28px 28px;
+}
+
+.luxury-modal-btn {
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  font-family: "Poppins", sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+  outline: none;
+}
+
+.luxury-modal-btn.primary {
+  background: #201712;
+  color: #faf8f5;
+  box-shadow: 0 4px 14px rgba(32, 23, 18, 0.18);
+}
+
+.luxury-modal-btn.primary:hover {
+  background: #8b6b55;
+  box-shadow: 0 6px 20px rgba(139, 107, 85, 0.3);
+  transform: translateY(-1px);
+}
+
+.luxury-modal-btn.primary:active {
+  transform: translateY(0);
+}
+
+.luxury-modal-btn.secondary {
+  background: transparent;
+  color: #6b5d54;
+  border: 1px solid rgba(32, 23, 18, 0.14);
+}
+
+.luxury-modal-btn.secondary:hover {
+  background: #ffffff;
+  border-color: rgba(32, 23, 18, 0.22);
+  color: #201712;
+}
+
+/* DIVIDER */
+.luxury-modal-actions .luxury-modal-btn + .luxury-modal-btn {
+  border-top: none;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .luxury-modal-dialog {
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .luxury-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .luxury-modal-content {
+    padding: 24px 22px 16px;
+  }
+
+  .luxury-modal-actions {
+    padding: 14px 22px 26px;
+  }
+
+  .luxury-modal-title {
+    font-size: 24px;
+  }
+}

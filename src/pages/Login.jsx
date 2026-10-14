@@ -1,11 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   FiMail,
   FiLock,
   FiArrowRight,
   FiCheckCircle,
+  FiArrowLeft,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../supabaseClient";
@@ -20,13 +21,20 @@ export default function Login() {
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated, loading: authLoading } = useAuth();
 
   const redirectTarget = searchParams.get("redirect") || "/";
 
   const isFromCheckout =
     redirectTarget.includes("checkout") ||
     searchParams.get("from") === "checkout";
+
+  // If already logged in, redirect automatically to destination
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate(redirectTarget, { replace: true });
+    }
+  }, [authLoading, isAuthenticated, navigate, redirectTarget]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,21 +101,35 @@ export default function Login() {
     }
   };
 
+  if (authLoading) {
+    return (
+      <main className="auth-page auth-loading-center">
+        <div className="checkout-spinner"></div>
+      </main>
+    );
+  }
+
   return (
     <main className="auth-page">
       <div className="auth-container">
         {/* CHECKOUT NOTICE BANNER */}
         {isFromCheckout && (
-          <div className="auth-notice-banner">
-            <FiCheckCircle className="notice-icon" />
-            <div>
-              <strong>Almost there!</strong>
-              <span>
-                Please log in or create an account to finalize your luxury
-                order.
-              </span>
+          <>
+            <Link to="/shop" className="auth-checkout-back">
+              <FiArrowLeft /> Return to Fragrances
+            </Link>
+
+            <div className="auth-notice-banner">
+              <FiCheckCircle className="notice-icon" />
+              <div>
+                <strong>Almost there!</strong>
+                <span>
+                  Please log in or create an account to finalize your luxury
+                  order.
+                </span>
+              </div>
             </div>
-          </div>
+          </>
         )}
 
         <div className="auth-card">

@@ -8,11 +8,14 @@ import {
 import { useEffect } from "react";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import { AlertProvider } from "./context/AlertContext";
 
 // Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CartDrawer from "./components/CartDrawer";
+import LuxuryAlertModal from "./components/LuxuryAlertModal";
+import { supabase } from "./supabaseClient";
 
 // Pages
 import Home from "./pages/Home";
@@ -39,6 +42,7 @@ function ScrollManager() {
             behavior: "smooth",
             block: "start",
           });
+
           return;
         }
       }
@@ -61,6 +65,33 @@ function ScrollManager() {
 function AppContent() {
   const location = useLocation();
   const isResetPasswordPage = location.pathname === "/reset-password";
+
+  useEffect(() => {
+    testSupabase();
+  }, []);
+
+  async function testSupabase() {
+    console.log("========== SUPABASE TEST ==========");
+
+    try {
+      // Test connection by checking Supabase authentication endpoint
+      const { data, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("❌ Supabase connection failed:");
+        console.error(error);
+        return;
+      }
+
+      console.log("✅ Supabase connection successful!");
+      console.log("Session:", data.session);
+    } catch (error) {
+      console.error("❌ Supabase connection failed:");
+      console.error(error);
+    }
+
+    console.log("===================================");
+  }
 
   return (
     <>
@@ -94,9 +125,12 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <Router>
-          <AppContent />
-        </Router>
+        <AlertProvider>
+          <Router>
+            <AppContent />
+            <LuxuryAlertModal />
+          </Router>
+        </AlertProvider>
       </CartProvider>
     </AuthProvider>
   );

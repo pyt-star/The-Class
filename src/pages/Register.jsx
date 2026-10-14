@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   FiUser,
@@ -7,6 +7,7 @@ import {
   FiLock,
   FiArrowRight,
   FiCheckCircle,
+  FiArrowLeft,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import "./Login.css";
@@ -22,12 +23,19 @@ export default function Register() {
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, isAuthenticated, loading: authLoading } = useAuth();
 
   const redirectTarget = searchParams.get("redirect") || "/";
   const isFromCheckout =
     redirectTarget.includes("checkout") ||
     searchParams.get("from") === "checkout";
+
+  // If already logged in, redirect automatically to destination
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate(redirectTarget, { replace: true });
+    }
+  }, [authLoading, isAuthenticated, navigate, redirectTarget]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,19 +90,33 @@ export default function Register() {
     }
   };
 
+  if (authLoading) {
+    return (
+      <main className="auth-page auth-loading-center">
+        <div className="checkout-spinner"></div>
+      </main>
+    );
+  }
+
   return (
     <main className="auth-page">
       <div className="auth-container">
         {isFromCheckout && (
-          <div className="auth-notice-banner">
-            <FiCheckCircle className="notice-icon" />
-            <div>
-              <strong>Complete Your Order</strong>
-              <span>
-                Create your account to continue with your order.
-              </span>
+          <>
+            <Link to="/shop" className="auth-checkout-back">
+              <FiArrowLeft /> Return to Fragrances
+            </Link>
+
+            <div className="auth-notice-banner">
+              <FiCheckCircle className="notice-icon" />
+              <div>
+                <strong>Complete Your Order</strong>
+                <span>
+                  Create your account to continue with your order.
+                </span>
+              </div>
             </div>
-          </div>
+          </>
         )}
 
         <div className="auth-card">

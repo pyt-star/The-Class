@@ -12,9 +12,17 @@ import {
 import "./Account.css";
 
 export default function Account() {
-  const { user, isAuthenticated, logout, userInitial } = useAuth();
+  const { user, isAuthenticated, loading, logout, userInitial } = useAuth();
   const [activeTab, setActiveTab] = useState("orders");
   const navigate = useNavigate();
+
+  if (loading && !isAuthenticated) {
+    return (
+      <main className="account-page account-loading-center">
+        <div className="checkout-spinner"></div>
+      </main>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

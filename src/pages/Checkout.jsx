@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -13,7 +13,7 @@ import {
 import "./Checkout.css";
 
 export default function Checkout() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   const { cartItems, totalPrice, clearCart } = useCart();
 
   const [formData, setFormData] = useState({
@@ -29,6 +29,22 @@ export default function Checkout() {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    if (user?.name && !formData.fullName) {
+      setFormData((prev) => ({ ...prev, fullName: user.name }));
+    }
+  }, [user, formData.fullName]);
+
+  // While determining session state, show graceful luxury loader
+  if (loading && !isAuthenticated) {
+    return (
+      <main className="checkout-page checkout-loading-center">
+        <div className="checkout-spinner"></div>
+        <p className="checkout-loading-text">Verifying secure luxury session...</p>
+      </main>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login?redirect=/checkout" replace />;

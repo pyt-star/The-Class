@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useAlert } from "../context/AlertContext";
 import { getProducts } from "../productService";
 import "./ProductDetail.css";
 
@@ -8,6 +9,7 @@ export default function ProductDetail() {
   const { id } = useParams();
 
   const { addToCart } = useCart();
+  const { showAlert } = useAlert();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -92,9 +94,20 @@ export default function ProductDetail() {
       numericPrice
     );
 
-    alert(
-      `${product.name} (${product.size}) added to your bag!`
-    );
+    showAlert({
+      type: "cart",
+      title: "Added to Your Bag",
+      product: {
+        name: product.name,
+        image: product.image,
+        size: product.size,
+        price: numericPrice,
+      },
+      size: product.size,
+      price: numericPrice,
+      confirmText: "VIEW SHOPPING BAG",
+      cancelText: "CONTINUE SHOPPING",
+    });
   };
 
   return (

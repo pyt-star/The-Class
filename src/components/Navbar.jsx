@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import {
   FiMenu,
@@ -23,6 +23,8 @@ export default function Navbar() {
   const { totalItems, setIsCartOpen } = useCart();
   const { user, isAuthenticated, userInitial, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   const accountRef = useRef(null);
 
@@ -168,7 +170,7 @@ export default function Navbar() {
           TOP NAVBAR
       ================================= */}
 
-      <header className="navbar">
+      <header className={`navbar ${isHome ? "navbar-home" : "navbar-solid"}`}>
 
         {/* MENU BUTTON */}
 
