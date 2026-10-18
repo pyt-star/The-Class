@@ -13,17 +13,26 @@ const CATEGORIES = [
 ];
 
 export default function Shop() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const categoryFromUrl = searchParams.get("category");
+  const savedCategory = sessionStorage.getItem("shopActiveCategory");
 
-  const [activeCategory, setActiveCategory] = useState(
-    CATEGORIES.includes(categoryFromUrl)
-      ? categoryFromUrl
-      : "All"
-  );
+  const initialCategory = CATEGORIES.includes(categoryFromUrl)
+    ? categoryFromUrl
+    : (CATEGORIES.includes(savedCategory) ? savedCategory : "All");
 
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [products, setProducts] = useState([]);
+  const [highlightedId, setHighlightedId] = useState(null);
+
+  // Sync category state when URL query changes
+  useEffect(() => {
+    if (categoryFromUrl && CATEGORIES.includes(categoryFromUrl)) {
+      setActiveCategory(categoryFromUrl);
+      sessionStorage.setItem("shopActiveCategory", categoryFromUrl);
+    }
+  }, [categoryFromUrl]);
 
   useEffect(() => {
     let isMounted = true;
@@ -46,6 +55,59 @@ export default function Shop() {
       isMounted = false;
     };
   }, []);
+
+  // When returning to shop after viewing a perfume, smoothly scroll to that perfume's section!
+  useEffect(() => {
+    if (products.length === 0) return;
+
+    const targetId = sessionStorage.getItem("lastViewedProductId");
+    const targetSection = sessionStorage.getItem("scrollTargetSection");
+
+    if (!targetId || targetSection !== "shop") return;
+
+    const targetProduct = products.find((p) => String(p.id) === String(targetId));
+    if (!targetProduct) {
+      sessionStorage.removeItem("lastViewedProductId");
+      sessionStorage.removeItem("scrollTargetSection");
+      return;
+    }
+
+    // If current category filter hides this product, switch to its category
+    if (activeCategory !== "All" && activeCategory !== targetProduct.category) {
+      setActiveCategory(targetProduct.category);
+      sessionStorage.setItem("shopActiveCategory", targetProduct.category);
+      setSearchParams({ category: targetProduct.category });
+    }
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById(`product-${targetId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setHighlightedId(Number(targetId));
+        setTimeout(() => setHighlightedId(null), 2500);
+      }
+      sessionStorage.removeItem("lastViewedProductId");
+      sessionStorage.removeItem("scrollTargetSection");
+    }, 120);
+
+    return () => clearTimeout(timer);
+  }, [products, activeCategory, setSearchParams]);
+
+  const handleCategorySelect = (category) => {
+    setActiveCategory(category);
+    sessionStorage.setItem("shopActiveCategory", category);
+    if (category === "All") {
+      setSearchParams({});
+    } else {
+      setSearchParams({ category });
+    }
+  };
+
+  const handleProductClick = (productId) => {
+    sessionStorage.setItem("lastViewedProductId", String(productId));
+    sessionStorage.setItem("scrollTargetSection", "shop");
+    sessionStorage.setItem("shopActiveCategory", activeCategory);
+  };
 
   const filteredProducts =
     activeCategory === "All"
@@ -86,7 +148,7 @@ export default function Shop() {
             className={`filter-btn ${
               activeCategory === category ? "active" : ""
             }`}
-            onClick={() => setActiveCategory(category)}
+            onClick={() => handleCategorySelect(category)}
           >
             {category}
           </button>
@@ -131,13 +193,17 @@ export default function Shop() {
 
             return (
               <div
-                className="shop-card"
+                className={`shop-card ${
+                  highlightedId === product.id ? "shop-card-highlighted" : ""
+                }`}
+                id={`product-${product.id}`}
                 key={product.id}
               >
                 {/* PRODUCT IMAGE */}
                 <Link
                   to={`/product/${product.id}`}
                   className="image-wrapper"
+                  onClick={() => handleProductClick(product.id)}
                 >
                   <img
                     src={product.image || product.image_asset || ""}
@@ -186,9 +252,10 @@ export default function Shop() {
                   <Link
                     to={`/product/${product.id}`}
                     style={{ textDecoration: "none" }}
+                    onClick={() => handleProductClick(product.id)}
                   >
                     <button className="shop-add-btn">
-                      View Fragrance →
+                      {isGiftSet ? "View Gift Set →" : "View Fragrance →"}
                     </button>
                   </Link>
                 </div>

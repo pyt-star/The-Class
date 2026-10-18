@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./BestSeller.css";
@@ -6,6 +5,7 @@ import { getProducts } from "../productService";
 
 export default function BestSeller() {
   const [products, setProducts] = useState([]);
+  const [highlightedId, setHighlightedId] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -35,6 +35,34 @@ export default function BestSeller() {
       isMounted = false;
     };
   }, []);
+
+  // When returning to home after viewing a best seller perfume, scroll back to it!
+  useEffect(() => {
+    if (products.length === 0) return;
+
+    const targetId = sessionStorage.getItem("lastViewedProductId");
+    const targetSection = sessionStorage.getItem("scrollTargetSection");
+
+    if (!targetId || targetSection !== "bestseller") return;
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById(`bestseller-${targetId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setHighlightedId(Number(targetId));
+        setTimeout(() => setHighlightedId(null), 2500);
+      }
+      sessionStorage.removeItem("lastViewedProductId");
+      sessionStorage.removeItem("scrollTargetSection");
+    }, 120);
+
+    return () => clearTimeout(timer);
+  }, [products]);
+
+  const handleProductClick = (productId) => {
+    sessionStorage.setItem("lastViewedProductId", String(productId));
+    sessionStorage.setItem("scrollTargetSection", "bestseller");
+  };
 
   const formatPrice = (price) => {
     if (price === null || price === undefined || price === "") {
@@ -91,9 +119,18 @@ export default function BestSeller() {
           );
 
           return (
-            <div className="best-card" key={product.id}>
+            <div
+              className={`best-card ${
+                highlightedId === product.id ? "best-card-highlighted" : ""
+              }`}
+              id={`bestseller-${product.id}`}
+              key={product.id}
+            >
               <div className="best-image-wrapper">
-                <Link to={`/product/${product.id}`}>
+                <Link
+                  to={`/product/${product.id}`}
+                  onClick={() => handleProductClick(product.id)}
+                >
                   <img
                     src={product.image || product.image_asset || ""}
                     alt={product.name}
@@ -131,8 +168,9 @@ export default function BestSeller() {
                 <Link
                   to={`/product/${product.id}`}
                   className="best-view-btn"
+                  onClick={() => handleProductClick(product.id)}
                 >
-                  View Product
+                  {isGiftSet ? "View Gift Set →" : "View Product →"}
                 </Link>
               </div>
             </div>

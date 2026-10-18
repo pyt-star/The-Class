@@ -92,10 +92,6 @@ export default function Footer() {
             Why The Class
           </Link>
 
-          <Link to="/#newsletter">
-            Newsletter
-          </Link>
-
           <Link to="/shop">
             Shop All
           </Link>

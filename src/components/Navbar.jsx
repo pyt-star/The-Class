@@ -86,6 +86,8 @@ export default function Navbar() {
   const handleProductClick = (productId) => {
     clearSearch();
     setIsFocused(false);
+    sessionStorage.setItem("lastViewedProductId", String(productId));
+    sessionStorage.setItem("scrollTargetSection", "shop");
     navigate(`/product/${productId}`);
   };
 
@@ -460,7 +462,14 @@ export default function Navbar() {
             Home
           </Link>
 
-          <Link to="/shop" onClick={closeMenu}>
+          <Link
+            to="/shop"
+            onClick={() => {
+              sessionStorage.removeItem("lastViewedProductId");
+              sessionStorage.removeItem("scrollTargetSection");
+              closeMenu();
+            }}
+          >
             Fragrances
           </Link>
 
@@ -503,23 +512,6 @@ export default function Navbar() {
           )}
 
         </nav>
-
-        {/* SIDEBAR FOOTER */}
-
-        <div className="sidebar-footer">
-
-          <p className="footer-title">
-            STAY CONNECTED
-          </p>
-
-          <Link
-            to="/#newsletter"
-            onClick={closeMenu}
-          >
-            Newsletter
-          </Link>
-
-        </div>
 
       </aside>
     </>

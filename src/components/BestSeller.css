@@ -74,6 +74,27 @@
   transform: translateY(-10px);
 }
 
+@keyframes bestCardHighlight {
+  0% {
+    box-shadow: 0 0 0 3px #8b6b55, 0 20px 45px rgba(139, 107, 85, 0.35);
+    transform: translateY(-6px);
+  }
+  50% {
+    box-shadow: 0 0 0 4px #b89379, 0 25px 50px rgba(139, 107, 85, 0.25);
+    transform: translateY(-6px);
+  }
+  100% {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    transform: translateY(0);
+  }
+}
+
+.best-card.best-card-highlighted {
+  animation: bestCardHighlight 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  position: relative;
+  z-index: 2;
+}
+
 
 /* =========================================
    IMAGE

@@ -47,6 +47,19 @@ function ScrollManager() {
         }
       }
 
+      // Check if we have a pending scroll target for Shop or Home BestSellers
+      const targetId = sessionStorage.getItem("lastViewedProductId");
+      const targetSection = sessionStorage.getItem("scrollTargetSection");
+
+      if (
+        targetId &&
+        ((pathname === "/shop" && targetSection === "shop") ||
+          (pathname === "/" && targetSection === "bestseller"))
+      ) {
+        // Let the respective page smoothly scroll to the exact product card
+        return;
+      }
+
       window.scrollTo({
         top: 0,
         left: 0,

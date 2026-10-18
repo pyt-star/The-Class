@@ -3,8 +3,6 @@ import BestSeller from "../components/BestSeller";
 import Category from "../components/Category";
 import About from "../components/About";
 import WhyChooseUs from "../components/WhyChooseUs";
-import Newsletter from "../components/Newsletter";
-
 export default function Home() {
   return (
     <main className="home-page">
@@ -27,10 +25,6 @@ export default function Home() {
 
       <div id="why-the-class" className="home-anchor">
         <WhyChooseUs />
-      </div>
-
-      <div id="newsletter" className="home-anchor">
-        <Newsletter />
       </div>
 
     </main>
