@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -6,6 +7,7 @@ import "./CartDrawer.css";
 export default function CartDrawer() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+
   const {
     cartItems,
     removeFromCart,
@@ -19,6 +21,7 @@ export default function CartDrawer() {
 
   const handleCheckoutClick = () => {
     setIsCartOpen(false);
+
     if (isAuthenticated) {
       navigate("/checkout");
     } else {
@@ -35,11 +38,7 @@ export default function CartDrawer() {
       />
 
       {/* SLIDE-OUT DRAWER */}
-      <aside
-        className={`cart-drawer ${
-          isCartOpen ? "open" : ""
-        }`}
-      >
+      <aside className={`cart-drawer ${isCartOpen ? "open" : ""}`}>
         {/* HEADER */}
         <div className="cart-header">
           <h2>
@@ -70,125 +69,109 @@ export default function CartDrawer() {
         ) : (
           /* CART CONTENT */
           <div className="cart-body">
-
             {/* CLEAR ALL */}
             <div className="cart-top-bar">
-              <button
-                className="clear-all-btn"
-                onClick={clearCart}
-              >
+              <button className="clear-all-btn" onClick={clearCart}>
                 Clear all
               </button>
             </div>
 
             {/* ITEM LIST */}
             <div className="cart-items-list">
+              {cartItems.map((item) => {
+                const variantId = item.variantId ?? item.variant_id ?? null;
 
-              {cartItems.map((item) => (
-                <div
-                  className="cart-item-card"
-                  key={`${item.id}-${item.size}`}
-                >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="cart-item-img"
-                  />
+                return (
+                  <div
+                    className="cart-item-card"
+                    key={`${item.id}-${item.size}-${variantId ?? ""}`}
+                  >
+                    <img
+                      src={item.image || item.image_asset || ""}
+                      alt={item.name}
+                      className="cart-item-img"
+                    />
 
-                  <div className="cart-item-info">
-
-                    <div className="cart-item-title-row">
-
-                      <h3>
-                        {item.name}
-                      </h3>
-
-                      <button
-                        className="item-delete-btn"
-                        onClick={() =>
-                          removeFromCart(
-                            item.id,
-                            item.size
-                          )
-                        }
-                        aria-label={`Remove ${item.name}`}
-                      >
-                        ✕
-                      </button>
-
-                    </div>
-
-                    <p className="cart-item-subtitle">
-                      {item.size} | Luxury Eau De Parfum
-                    </p>
-
-                    <div className="cart-item-controls">
-
-                      {/* QUANTITY */}
-                      <div className="qty-selector">
+                    <div className="cart-item-info">
+                      <div className="cart-item-title-row">
+                        <h3>{item.name}</h3>
 
                         <button
+                          className="item-delete-btn"
                           onClick={() =>
-                            updateQuantity(
+                            removeFromCart(
                               item.id,
                               item.size,
-                              -1
+                              variantId
                             )
                           }
+                          aria-label={`Remove ${item.name}`}
                         >
-                          −
+                          ✕
                         </button>
-
-                        <span>
-                          {item.quantity}
-                        </span>
-
-                        <button
-                          onClick={() =>
-                            updateQuantity(
-                              item.id,
-                              item.size,
-                              1
-                            )
-                          }
-                        >
-                          +
-                        </button>
-
                       </div>
 
-                      {/* PRICE */}
-                      <span className="cart-item-price">
-                        ₹
-                        {Number(item.price).toLocaleString(
-                          "en-IN"
-                        )}
-                      </span>
+                      <p className="cart-item-subtitle">
+                        {item.size} | Luxury Eau De Parfum
+                      </p>
 
+                      <div className="cart-item-controls">
+                        {/* QUANTITY */}
+                        <div className="qty-selector">
+                          <button
+                            onClick={() =>
+                              updateQuantity(
+                                item.id,
+                                item.size,
+                                -1,
+                                variantId
+                              )
+                            }
+                            aria-label={`Decrease quantity of ${item.name}`}
+                          >
+                            −
+                          </button>
+
+                          <span>{item.quantity}</span>
+
+                          <button
+                            onClick={() =>
+                              updateQuantity(
+                                item.id,
+                                item.size,
+                                1,
+                                variantId
+                              )
+                            }
+                            aria-label={`Increase quantity of ${item.name}`}
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        {/* PRICE */}
+                        <span className="cart-item-price">
+                          ₹
+                          {Number(item.price || 0).toLocaleString(
+                            "en-IN"
+                          )}
+                        </span>
+                      </div>
                     </div>
-
                   </div>
-                </div>
-              ))}
-
+                );
+              })}
             </div>
 
             {/* SUMMARY */}
             <div className="cart-footer">
-
               <div className="summary-row total-row">
-
-                <span>
-                  Subtotal
-                </span>
+                <span>Subtotal</span>
 
                 <span className="cart-final-total">
                   ₹
-                  {Number(totalPrice).toLocaleString(
-                    "en-IN"
-                  )}
+                  {Number(totalPrice || 0).toLocaleString("en-IN")}
                 </span>
-
               </div>
 
               <button
@@ -197,12 +180,9 @@ export default function CartDrawer() {
               >
                 Checkout <span>›</span>
               </button>
-
             </div>
-
           </div>
         )}
-
       </aside>
     </>
   );

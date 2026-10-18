@@ -1,78 +1,174 @@
-import { createContext, useState, useEffect, useContext } from "react";
+
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem("luxury_cart");
-    return savedCart ? JSON.parse(savedCart) : [];
+    try {
+      const savedCart = localStorage.getItem("luxury_cart");
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error("Failed to load saved cart:", error);
+      return [];
+    }
   });
 
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // Save cart changes to local storage
   useEffect(() => {
-    localStorage.setItem("luxury_cart", JSON.stringify(cartItems));
+    try {
+      localStorage.setItem("luxury_cart", JSON.stringify(cartItems));
+    } catch (error) {
+      console.error("Failed to save cart:", error);
+    }
   }, [cartItems]);
 
-  const addToCart = (product, size = "50ml", price) => {
-    setCartItems((prevItems) => {
-      const existingIndex = prevItems.findIndex(
-        (item) => item.id === product.id && item.size === size
-      );
+  // Add a product variant to the cart
+  // Existing calls with only product, size, and price still work.
+  const addToCart = (
+    product,
+    size = "50ml",
+    price,
+    variantId = null
+  ) => {
+    const selectedPrice = Number(
+      price ?? product.price ?? 0
+    );
 
-      if (existingIndex > -1) {
-        const updatedItems = [...prevItems];
-        updatedItems[existingIndex].quantity += 1;
-        return updatedItems;
-      } else {
-        return [
-          ...prevItems,
-          {
-            id: product.id,
-            name: product.name,
-            image: product.image,
-            size: size,
-            price: price || product.price,
-            quantity: 1,
-          },
-        ];
+    setCartItems((prevItems) => {
+      const existingIndex = prevItems.findIndex((item) => {
+        const sameProduct = item.id === product.id;
+        const sameSize = item.size === size;
+
+        // If a variant ID is provided, match that exact variant.
+        // Otherwise, retain compatibility with older cart entries.
+        const sameVariant =
+          variantId != null
+            ? String(item.variantId ?? item.variant_id ?? "") ===
+              String(variantId)
+            : (item.variantId == null && item.variant_id == null) ||
+              String(item.variantId ?? item.variant_id ?? "") ===
+                String(variantId);
+
+        return sameProduct && sameSize && sameVariant;
+      });
+
+      if (existingIndex !== -1) {
+        return prevItems.map((item, index) =>
+          index === existingIndex
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+                price: selectedPrice,
+              }
+            : item
+        );
       }
+
+      return [
+        ...prevItems,
+        {
+          id: product.id,
+          variantId,
+          name: product.name,
+          image: product.image || product.image_asset || "",
+          size,
+          price: selectedPrice,
+          quantity: 1,
+        },
+      ];
     });
 
     setIsCartOpen(true);
   };
 
-  const removeFromCart = (id, size) => {
+  // Remove a product or a specific size/variant
+  const removeFromCart = (id, size, variantId = null) => {
     setCartItems((prevItems) =>
-      prevItems.filter((item) => !(item.id === id && item.size === size))
+      prevItems.filter((item) => {
+        const sameProduct = item.id === id;
+
+        if (!sameProduct) return true;
+
+        if (size !== undefined && item.size !== size) {
+          return true;
+        }
+
+        if (variantId != null) {
+          const itemVariantId =
+            item.variantId ?? item.variant_id ?? null;
+
+          return String(itemVariantId) !== String(variantId);
+        }
+
+        return false;
+      })
     );
   };
 
-  // 1. NEW: Increase or decrease quantity with + / - buttons
-  const updateQuantity = (id, size, change) => {
+  // Increase or decrease quantity
+  const updateQuantity = (
+    id,
+    size,
+    change,
+    variantId = null
+  ) => {
     setCartItems((prevItems) =>
       prevItems
         .map((item) => {
-          if (item.id === id && item.size === size) {
-            const newQty = item.quantity + change;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
+          const sameProduct = item.id === id;
+          const sameSize = item.size === size;
+
+          const itemVariantId =
+            item.variantId ?? item.variant_id ?? null;
+
+          const sameVariant =
+            variantId == null
+              ? true
+              : String(itemVariantId) === String(variantId);
+
+          if (
+            !sameProduct ||
+            !sameSize ||
+            !sameVariant
+          ) {
+            return item;
           }
-          return item;
+
+          const newQuantity = item.quantity + change;
+
+          return newQuantity > 0
+            ? { ...item, quantity: newQuantity }
+            : null;
         })
-        .filter(Boolean) // Removes the item if quantity drops to 0
+        .filter(Boolean)
     );
   };
 
-  // 2. NEW: Empty the entire cart
+  // Empty the entire cart
   const clearCart = () => {
     setCartItems([]);
   };
 
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  // Total number of individual items
+  const totalItems = cartItems.reduce(
+    (sum, item) => sum + Number(item.quantity || 0),
+    0
+  );
 
+  // Total price, using the selected variant's price
   const totalPrice = cartItems.reduce((sum, item) => {
-    const numericPrice = Number(String(item.price).replace(/[^0-9.-]+/g, ""));
-    return sum + numericPrice * item.quantity;
+    const price = Number(item.price || 0);
+    const quantity = Number(item.quantity || 0);
+
+    return sum + price * quantity;
   }, 0);
 
   return (
