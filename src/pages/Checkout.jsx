@@ -13,6 +13,26 @@ import {
 } from "react-icons/fi";
 import "./Checkout.css";
 
+let razorpayScriptPromise;
+
+function loadRazorpayCheckout() {
+  if (window.Razorpay) return Promise.resolve();
+  if (razorpayScriptPromise) return razorpayScriptPromise;
+
+  razorpayScriptPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = resolve;
+    script.onerror = () => {
+      razorpayScriptPromise = null;
+      reject(new Error("Razorpay Checkout could not be loaded. Please try again."));
+    };
+    document.head.appendChild(script);
+  });
+
+  return razorpayScriptPromise;
+}
+
 export default function Checkout() {
   const { user, isAuthenticated, loading } = useAuth();
   const { cartItems, totalPrice, clearCart } = useCart();
@@ -90,137 +110,121 @@ export default function Checkout() {
 
     setPlacingOrder(true);
 
-    let createdOrderId = null;
-
     try {
       if (!user?.email) {
         throw new Error("Please log in again to verify your account.");
       }
 
-      // Find the customer's profile using their authenticated email.
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("email", user.email)
-        .maybeSingle();
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
-      if (profileError) throw profileError;
-
-      if (!profile?.id) {
-        throw new Error(
-          "Your customer profile was not found. Please contact support."
-        );
+      if (sessionError) throw sessionError;
+      if (!session?.access_token) {
+        throw new Error("Please log in again to verify your account.");
       }
 
-      // Validate cart items before creating the order.
-      const orderItems = cartItems.map((item) => {
-        const productId = Number(item.id);
-        const variantId = item.variantId ?? item.variant_id ?? null;
-        const price = Number(
-          String(item.price ?? 0).replace(/[^0-9.-]+/g, "")
-        );
-        const quantity = Number(item.quantity);
+      const createResponse = await fetch("/api/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          items: cartItems.map((item) => ({
+            product_id: Number(item.id),
+            variant_id: Number(item.variantId ?? item.variant_id),
+            quantity: Number(item.quantity),
+          })),
+          shipping: {
+            full_name: formData.fullName.trim(),
+            phone: formData.phone.trim(),
+            address: formData.address.trim(),
+            city: formData.city.trim(),
+            state: formData.state.trim(),
+            postal_code: formData.pincode.trim(),
+          },
+        }),
+      });
+      const createResult = await createResponse.json();
 
-        if (!Number.isInteger(productId) || productId <= 0) {
-          throw new Error(`Invalid product ID for ${item.name}.`);
-        }
+      if (!createResponse.ok) {
+        throw new Error(createResult.error || "We couldn't start your payment.");
+      }
 
-        if (!Number.isInteger(price) || price < 0) {
-          throw new Error(`Invalid price for ${item.name}.`);
-        }
+      await loadRazorpayCheckout();
 
-        if (!Number.isInteger(quantity) || quantity < 1) {
-          throw new Error(`Invalid quantity for ${item.name}.`);
-        }
+      let paymentHandlerStarted = false;
+      const checkout = new window.Razorpay({
+        key: createResult.key_id,
+        order_id: createResult.order_id,
+        amount: createResult.amount,
+        currency: createResult.currency,
+        name: "The Class",
+        description: "Order payment",
+        prefill: {
+          name: formData.fullName.trim(),
+          email: user.email,
+          contact: formData.phone.trim(),
+        },
+        notes: { order_id: createResult.internal_order_id },
+        theme: { color: "#201712" },
+        handler: async (payment) => {
+          paymentHandlerStarted = true;
+          try {
+            const verifyResponse = await fetch("/api/verify-payment", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({
+                razorpay_payment_id: payment.razorpay_payment_id,
+                razorpay_order_id: payment.razorpay_order_id,
+                razorpay_signature: payment.razorpay_signature,
+              }),
+            });
+            const verifyResult = await verifyResponse.json();
 
-        if (
-          variantId !== null &&
-          (!Number.isInteger(Number(variantId)) || Number(variantId) <= 0)
-        ) {
-          throw new Error(`Invalid size variant for ${item.name}.`);
-        }
+            if (!verifyResponse.ok || !verifyResult.verified) {
+              throw new Error(
+                verifyResult.error || "We couldn't verify your payment. Please contact support."
+              );
+            }
 
-        return {
-          product_id: productId,
-          variant_id: variantId === null ? null : Number(variantId),
-          product_name_snapshot: item.name,
-          size_snapshot: item.size || null,
-          unit_price_inr: price,
-          quantity,
-        };
+            const reference = /^\d+$/.test(String(createResult.internal_order_id))
+              ? String(createResult.internal_order_id).padStart(6, "0")
+              : String(createResult.internal_order_id).slice(0, 8).toUpperCase();
+            setOrderId(`TC-${reference}`);
+            setOrderPlaced(true);
+            clearCart();
+          } catch (error) {
+            setErrorMsg(error.message || "Payment verification failed. Please contact support.");
+          } finally {
+            setPlacingOrder(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            if (!paymentHandlerStarted) setPlacingOrder(false);
+          },
+        },
       });
 
-      // Calculate the subtotal from the individual cart lines.
-      const subtotal = orderItems.reduce(
-        (sum, item) => sum + item.unit_price_inr * item.quantity,
-        0
-      );
+      checkout.on("payment.failed", (payment) => {
+        setErrorMsg(
+          payment?.error?.description || "Payment failed. You can try again."
+        );
+        setPlacingOrder(false);
+      });
 
-      // Create the order. The database generates its integer ID.
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .insert({
-          profile_id: profile.id,
-          customer_id: null,
-          status: "pending",
-          subtotal_inr: subtotal,
-          discount_inr: 0,
-          shipping_inr: 0,
-          total_inr: subtotal,
-          shipping_name: formData.fullName.trim(),
-          shipping_phone: formData.phone.trim(),
-          shipping_address: [
-            formData.address.trim(),
-            formData.city.trim(),
-            formData.state.trim(),
-            formData.pincode.trim(),
-          ].join(", "),
-        })
-        .select("id")
-        .single();
-
-      if (orderError) throw orderError;
-
-      createdOrderId = order.id;
-
-      // Save all selected products and variants.
-      const rowsToInsert = orderItems.map((item) => ({
-        ...item,
-        order_id: order.id,
-      }));
-
-      const { error: itemsError } = await supabase
-        .from("order_items")
-        .insert(rowsToInsert);
-
-      if (itemsError) {
-        // Attempt to remove the incomplete order if item insertion fails.
-        const { error: cleanupError } = await supabase
-          .from("orders")
-          .delete()
-          .eq("id", order.id);
-
-        if (cleanupError) {
-          console.error(
-            "Could not remove the incomplete order:",
-            cleanupError
-          );
-        }
-
-        throw itemsError;
-      }
-
-      setOrderId(`TC-${String(order.id).padStart(6, "0")}`);
-      setOrderPlaced(true);
-      clearCart();
+      checkout.open();
     } catch (error) {
-      console.error("Failed to place order:", error);
-
       setErrorMsg(
         error.message ||
-          "We couldn't place your order. Please try again."
+          "We couldn't start your payment. Please try again."
       );
-    } finally {
       setPlacingOrder(false);
     }
   };
@@ -293,11 +297,9 @@ export default function Checkout() {
             <FiArrowLeft /> Continue Shopping
           </Link>
 
-          <h1 className="checkout-title">Secure Luxury Checkout</h1>
+          <h1 className="checkout-title">Checkout</h1>
 
-          <div className="checkout-badge">
-            <FiShield /> 256-Bit SSL Encrypted
-          </div>
+        
         </div>
 
         {errorMsg && (
@@ -418,75 +420,11 @@ export default function Checkout() {
             <section className="checkout-section">
               <div className="section-title-wrap">
                 <span className="step-num">2</span>
-                <h2>Payment Method</h2>
+                <h2>Secure Payment</h2>
               </div>
-
-              <div className="payment-options">
-                <label
-                  className={`payment-option ${
-                    formData.paymentMethod === "upi" ? "selected" : ""
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="upi"
-                    checked={formData.paymentMethod === "upi"}
-                    onChange={handleChange}
-                  />
-
-                  <div className="payment-opt-content">
-                    <span className="payment-opt-title">UPI Instant Pay</span>
-                    <span className="payment-opt-sub">
-                      Google Pay, PhonePe, Paytm, or any UPI App
-                    </span>
-                  </div>
-                </label>
-
-                <label
-                  className={`payment-option ${
-                    formData.paymentMethod === "card" ? "selected" : ""
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="card"
-                    checked={formData.paymentMethod === "card"}
-                    onChange={handleChange}
-                  />
-
-                  <div className="payment-opt-content">
-                    <span className="payment-opt-title">
-                      Credit / Debit Card
-                    </span>
-                    <span className="payment-opt-sub">
-                      Visa, Mastercard, American Express, RuPay
-                    </span>
-                  </div>
-                </label>
-
-                <label
-                  className={`payment-option ${
-                    formData.paymentMethod === "cod" ? "selected" : ""
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="cod"
-                    checked={formData.paymentMethod === "cod"}
-                    onChange={handleChange}
-                  />
-
-                  <div className="payment-opt-content">
-                    <span className="payment-opt-title">Cash on Delivery</span>
-                    <span className="payment-opt-sub">
-                      Pay with cash upon doorstep delivery
-                    </span>
-                  </div>
-                </label>
-              </div>
+              <p className="payment-opt-sub">
+                Pay securely with UPI, cards, net banking, or other methods available in Razorpay Checkout.
+              </p>
             </section>
           </div>
 
@@ -557,8 +495,8 @@ export default function Checkout() {
                 disabled={placingOrder}
               >
                 {placingOrder
-                  ? "PLACING ORDER..."
-                  : `PLACE ORDER — ₹${displayTotal.toLocaleString("en-IN")}`}
+                  ? "OPENING SECURE CHECKOUT..."
+                  : `PAY SECURELY — ₹${displayTotal.toLocaleString("en-IN")}`}
               </button>
 
               <div className="summary-guarantees">

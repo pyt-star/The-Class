@@ -1,0 +1,14 @@
+{
+  "name": "the-class-payment-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "razorpay": "^2.9.8"
+  }
+}
