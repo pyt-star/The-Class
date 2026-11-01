@@ -174,6 +174,60 @@ async function createRazorpayOrder(client, payload) {
   throw new Error("Razorpay order creation failed.");
 }
 
+app.get("/api/orders", async (req, res) => {
+  try {
+    const environment = getEnvironment();
+    const db = getDatabase(environment);
+    const customer = await requireCustomer(req, db);
+    const profile = await getCustomerProfile(db, customer);
+
+    const { data: orders, error: ordersError } = await db
+      .from("orders")
+      .select("id, status, total_inr, created_at")
+      .eq("profile_id", profile.id)
+      .neq("status", "pending")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (ordersError) throw ordersError;
+
+    const orderIds = (orders || []).map((order) => order.id);
+    let items = [];
+    if (orderIds.length) {
+      const { data, error: itemsError } = await db
+        .from("order_items")
+        .select("order_id, product_name_snapshot, size_snapshot, unit_price_inr, quantity")
+        .in("order_id", orderIds);
+      if (itemsError) throw itemsError;
+      items = data || [];
+    }
+
+    const itemsByOrderId = new Map();
+    items.forEach((item) => {
+      const orderItems = itemsByOrderId.get(item.order_id) || [];
+      orderItems.push({
+        name: item.product_name_snapshot,
+        size: item.size_snapshot,
+        unit_price_inr: Number(item.unit_price_inr),
+        quantity: Number(item.quantity),
+      });
+      itemsByOrderId.set(item.order_id, orderItems);
+    });
+
+    return res.json({
+      orders: (orders || []).map((order) => ({
+        ...order,
+        items: itemsByOrderId.get(order.id) || [],
+      })),
+    });
+  } catch (error) {
+    if (error.status === 400 || error.status === 401) {
+      return res.status(error.status).json({ error: error.message });
+    }
+    console.error("Order history API error:", error.message || "Unknown error");
+    return res.status(500).json({ error: "Unable to load your orders right now." });
+  }
+});
+
 app.post("/api/create-order", async (req, res) => {
   try {
     const environment = getEnvironment();

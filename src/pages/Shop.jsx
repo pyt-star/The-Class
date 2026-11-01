@@ -251,12 +251,12 @@ export default function Shop() {
                   {/* VIEW PRODUCT */}
                   <Link
                     to={`/product/${product.id}`}
-                    style={{ textDecoration: "none" }}
+                    className="shop-card-action"
                     onClick={() => handleProductClick(product.id)}
                   >
-                    <button className="shop-add-btn">
+                    <span className="shop-add-btn">
                       {isGiftSet ? "View Gift Set →" : "View Fragrance →"}
-                    </button>
+                    </span>
                   </Link>
                 </div>
               </div>

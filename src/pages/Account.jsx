@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { supabase } from "../supabaseClient";
 import {
   FiUser,
   FiPackage,
@@ -12,14 +13,54 @@ import {
 import "./Account.css";
 
 export default function Account() {
-  const { user, isAuthenticated, loading, logout, userInitial } = useAuth();
+  const { user, isAuthenticated, loading, logout, userInitial, changeEmail } = useAuth();
   const [activeTab, setActiveTab] = useState("orders");
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [ordersError, setOrdersError] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [emailChangeMessage, setEmailChangeMessage] = useState("");
   const [emailChangeError, setEmailChangeError] = useState("");
   const [emailChangeLoading, setEmailChangeLoading] = useState(false);
   const navigate = useNavigate();
-  const { changeEmail } = useAuth();
+
+  useEffect(() => {
+    let active = true;
+
+    const loadOrders = async () => {
+      if (!user?.id) {
+        setOrders([]);
+        setOrdersLoading(false);
+        return;
+      }
+
+      setOrders([]);
+      setOrdersLoading(true);
+      setOrdersError("");
+
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!session?.access_token) throw new Error("Please sign in again to view your orders.");
+
+        const response = await fetch("/api/orders", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unable to load your orders.");
+        if (active) setOrders(Array.isArray(result.orders) ? result.orders : []);
+      } catch (error) {
+        if (active) setOrdersError(error.message || "Unable to load your orders.");
+      } finally {
+        if (active) setOrdersLoading(false);
+      }
+    };
+
+    loadOrders();
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
 
   if (loading && !isAuthenticated) {
     return (
@@ -120,25 +161,52 @@ export default function Account() {
                 </Link>
               </div>
 
-              <div className="mock-order-card">
-                <div className="order-card-header">
-                  <div>
-                    <span className="order-num">Order #TC-928104</span>
-                    <span className="order-date">Recent Activity</span>
-                  </div>
-                  <span className="order-status-pill in-transit">
-                    Order Processing
-                  </span>
+              {ordersLoading ? (
+                <p className="orders-feedback">Loading your orders…</p>
+              ) : ordersError ? (
+                <p className="orders-feedback error" role="alert">{ordersError}</p>
+              ) : orders.length === 0 ? (
+                <div className="orders-empty-state">
+                  <FiPackage />
+                  <h3>No orders yet</h3>
+                  <p>Your completed purchases will appear here.</p>
+                  <Link to="/shop" className="orders-empty-link">Explore fragrances</Link>
                 </div>
-
-                <div className="order-card-body">
-                  <p className="order-note">
-                    Your bespoke fragrances are inspected by our master perfumer
-                    before dispatch. Standard insured delivery takes 2-4 business
-                    days.
-                  </p>
+              ) : (
+                <div className="orders-list">
+                  {orders.map((order) => (
+                    <article className="account-order-card" key={order.id}>
+                      <div className="order-card-header">
+                        <div>
+                          <span className="order-num">
+                            Order #TC-{String(order.id).replace(/-/g, "").slice(0, 8).toUpperCase()}
+                          </span>
+                          <span className="order-date">
+                            {order.created_at ? new Date(order.created_at).toLocaleDateString("en-IN", {
+                              day: "numeric", month: "short", year: "numeric",
+                            }) : "Date unavailable"}
+                          </span>
+                        </div>
+                        <span className={`order-status-pill status-${String(order.status || "pending").toLowerCase()}`}>
+                          {String(order.status || "pending").replace(/_/g, " ")}
+                        </span>
+                      </div>
+                      <div className="account-order-items">
+                        {(order.items || []).map((item, index) => (
+                          <p key={`${order.id}-${index}`}>
+                            <span>{item.name} <small>{item.size} · Qty {item.quantity}</small></span>
+                            <strong>₹{(Number(item.unit_price_inr || 0) * Number(item.quantity || 0)).toLocaleString("en-IN")}</strong>
+                          </p>
+                        ))}
+                      </div>
+                      <div className="account-order-total">
+                        <span>Order total</span>
+                        <strong>₹{Number(order.total_inr || 0).toLocaleString("en-IN")}</strong>
+                      </div>
+                    </article>
+                  ))}
                 </div>
-              </div>
+              )}
             </div>
           )}
 

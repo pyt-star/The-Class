@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./About.css";
 
 import about from "../assets/about.jpg";
 
 export default function About() {
+  const [storyOpen, setStoryOpen] = useState(false);
+
   return (
     <section className="about">
 
@@ -43,9 +45,32 @@ export default function About() {
 
         </div>
 
-        <button>
-          Discover Our Story
+        <button
+          type="button"
+          aria-expanded={storyOpen}
+          aria-controls="class-brand-story"
+          onClick={() => setStoryOpen((open) => !open)}
+        >
+          {storyOpen ? "Close Our Story" : "Discover Our Story"}
         </button>
+
+        {storyOpen && (
+          <div className="about-story-reveal" id="class-brand-story">
+            <p className="about-story-kicker">THE ART OF A SIGNATURE</p>
+            <h3>A scent that feels like you.</h3>
+            <p>
+              At THE CLASS, we believe fragrance is the most personal part of
+              getting dressed. It can mark a moment, change a mood, and stay in
+              someone’s memory long after you leave the room.
+            </p>
+            <p>
+              That is why every composition is considered as a journey: a
+              luminous first impression, a distinctive heart, and a warm,
+              lasting finish. Explore until you find the one that feels
+              unmistakably yours.
+            </p>
+          </div>
+        )}
 
       </div>
 

@@ -128,6 +128,44 @@
 
 }
 
+.about-story-reveal {
+    margin-top: 28px;
+    padding: 28px 30px;
+    border: 1px solid rgba(139, 107, 85, 0.24);
+    border-left: 3px solid #8b6b55;
+    border-radius: 4px 16px 16px 4px;
+    background: linear-gradient(135deg, #fbf8f4 0%, #f5eee7 100%);
+    animation: storyReveal 280ms ease-out both;
+}
+
+.about-story-kicker {
+    margin: 0 0 8px;
+    color: #8b6b55;
+    font: 500 10px/1.4 Poppins, sans-serif;
+    letter-spacing: 2.5px;
+}
+
+.about-story-reveal h3 {
+    margin: 0 0 12px;
+    color: #2c1b14;
+    font: 500 30px/1.1 "Cormorant Garamond", serif;
+}
+
+.about-story-reveal p:not(.about-story-kicker) {
+    margin: 0 0 10px;
+    color: #655a53;
+    font: 13px/1.8 Poppins, sans-serif;
+}
+
+.about-story-reveal p:last-child {
+    margin-bottom: 0;
+}
+
+@keyframes storyReveal {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* =========================================
    MOBILE OVERRIDES (Replace existing @media)
 ========================================= */
@@ -154,5 +192,13 @@
   .about-content button {
     width: 100%; /* Easy thumb-tap button */
     text-align: center;
+  }
+
+  .about-story-reveal {
+    padding: 22px 20px;
+  }
+
+  .about-story-reveal h3 {
+    font-size: 26px;
   }
 }

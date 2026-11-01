@@ -223,6 +223,129 @@
   line-height: 1.5;
 }
 
+.orders-feedback {
+  margin: 0;
+  padding: 24px;
+  color: #71665f;
+  font: 13px/1.6 "Poppins", sans-serif;
+  text-align: center;
+}
+
+.orders-feedback.error {
+  color: #9b3027;
+}
+
+.orders-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 42px 20px;
+  border: 1px dashed rgba(32, 23, 18, 0.18);
+  border-radius: 12px;
+  background: #faf8f5;
+  text-align: center;
+}
+
+.orders-empty-state > svg {
+  color: #8b6b55;
+  font-size: 25px;
+}
+
+.orders-empty-state h3 {
+  margin: 12px 0 4px;
+  color: #201712;
+  font: 500 23px "Cormorant Garamond", serif;
+}
+
+.orders-empty-state p {
+  margin: 0 0 16px;
+  color: #777;
+  font: 12px/1.6 "Poppins", sans-serif;
+}
+
+.orders-empty-link {
+  color: #8b6b55;
+  font: 500 12px "Poppins", sans-serif;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.orders-empty-link:hover {
+  text-decoration: underline;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-order-card {
+  padding: 20px;
+  border: 1px solid rgba(32, 23, 18, 0.1);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.account-order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(32, 23, 18, 0.08);
+  border-bottom: 1px solid rgba(32, 23, 18, 0.08);
+}
+
+.account-order-items p,
+.account-order-total {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0;
+  color: #352820;
+  font: 12px/1.5 "Poppins", sans-serif;
+}
+
+.account-order-items small {
+  display: block;
+  margin-top: 2px;
+  color: #8b7d73;
+  font-size: 10px;
+}
+
+.account-order-items strong,
+.account-order-total strong {
+  white-space: nowrap;
+}
+
+.account-order-total {
+  justify-content: flex-end;
+  padding-top: 13px;
+  color: #201712;
+  font-size: 13px;
+}
+
+.order-status-pill {
+  background: #f2eee9;
+  color: #665346;
+}
+
+.order-status-pill.status-confirmed,
+.order-status-pill.status-processing,
+.order-status-pill.status-shipped,
+.order-status-pill.status-delivered {
+  background: #eef7f0;
+  color: #356444;
+}
+
+.order-status-pill.status-cancelled,
+.order-status-pill.status-refunded {
+  background: #fff2f0;
+  color: #9b3027;
+}
+
 /* Profile details */
 .profile-details-grid {
   display: grid;

@@ -153,6 +153,12 @@
   flex-grow: 1;
 }
 
+.shop-card-action {
+  display: block;
+  margin-top: auto;
+  text-decoration: none;
+}
+
 .shop-card-content h3 {
   font-family: "Cormorant Garamond", serif;
   font-size: 30px;
@@ -176,7 +182,9 @@
 }
 
 .shop-add-btn {
-  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding: 14px;
   border: none;

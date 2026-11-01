@@ -193,21 +193,6 @@ export default function ProductDetail() {
       Number(selectedVariant.price_inr),
       selectedVariant.id
     );
-
-    showAlert({
-      type: "cart",
-      title: "Added to Your Bag",
-      product: {
-        name: product.name,
-        image: product.image,
-        size: selectedVariant.size_label,
-        price: Number(selectedVariant.price_inr),
-      },
-      size: selectedVariant.size_label,
-      price: Number(selectedVariant.price_inr),
-      confirmText: "VIEW SHOPPING BAG",
-      cancelText: "CONTINUE SHOPPING",
-    });
   };
 
   if (loading) {

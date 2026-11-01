@@ -4,31 +4,67 @@ import {
   useState,
   useEffect,
   useContext,
+  useRef,
 } from "react";
+import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
+const CART_STORAGE_KEY = "luxury_cart";
+const CART_OWNER_KEY = "luxury_cart_owner";
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState(() => {
+  const { user, loading: authLoading } = useAuth();
+  const userId = user?.id || null;
+  const [cartItems, setCartItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const cartReadyRef = useRef(false);
+  const skipNextPersistRef = useRef(false);
+
+  // Restore a cart only for the same identity. A logout or account switch
+  // starts a clean cart so one customer's bag never appears for another.
+  useEffect(() => {
+    if (authLoading) return;
+
+    const owner = userId || "guest";
+    let savedCart = [];
+    let savedOwner = null;
+
     try {
-      const savedCart = localStorage.getItem("luxury_cart");
-      return savedCart ? JSON.parse(savedCart) : [];
+      savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
+      savedOwner = localStorage.getItem(CART_OWNER_KEY);
     } catch (error) {
       console.error("Failed to load saved cart:", error);
-      return [];
     }
-  });
 
-  const [isCartOpen, setIsCartOpen] = useState(false);
+    const canRestore = savedOwner === owner && Array.isArray(savedCart);
+    const nextCart = canRestore ? savedCart : [];
+    skipNextPersistRef.current = true;
+    cartReadyRef.current = true;
+    setCartItems(nextCart);
+    setIsCartOpen(false);
 
-  // Save cart changes to local storage
-  useEffect(() => {
     try {
-      localStorage.setItem("luxury_cart", JSON.stringify(cartItems));
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(nextCart));
+      localStorage.setItem(CART_OWNER_KEY, owner);
+    } catch (error) {
+      console.error("Failed to prepare cart for this account:", error);
+    }
+  }, [authLoading, userId]);
+
+  useEffect(() => {
+    if (authLoading || !cartReadyRef.current) return;
+    if (skipNextPersistRef.current) {
+      skipNextPersistRef.current = false;
+      return;
+    }
+
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+      localStorage.setItem(CART_OWNER_KEY, userId || "guest");
     } catch (error) {
       console.error("Failed to save cart:", error);
     }
-  }, [cartItems]);
+  }, [authLoading, cartItems, userId]);
 
   // Add a product variant to the cart
   // Existing calls with only product, size, and price still work.
