@@ -56,6 +56,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const authFlowRef = useRef("idle");
+  const recoverySessionRef = useRef(false);
 
   const saveUser = useCallback((rawUser) => {
     setUser(formatUser(rawUser));
@@ -69,8 +70,19 @@ export function AuthProvider({ children }) {
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (!mounted) return;
 
+      if (event === "PASSWORD_RECOVERY") {
+        recoverySessionRef.current = true;
+        saveUser(null);
+        setLoading(false);
+        return;
+      }
+
       if (event === "SIGNED_OUT") {
         clearVerifiedSession();
+        recoverySessionRef.current = false;
+        saveUser(null);
+      } else if (recoverySessionRef.current) {
+        // Recovery tokens grant temporary password-update access, not app login.
         saveUser(null);
       } else if (session?.user) {
         if (authFlowRef.current === "verify") {
@@ -101,11 +113,19 @@ export function AuthProvider({ children }) {
         if (!mounted) return;
 
         const sessionUser = data.session?.user;
-        if (sessionUser && getVerifiedUserId() === sessionUser.id) {
+        // Password recovery also creates a Supabase session. Keep it available
+        // on the reset route so updateUser({ password }) can use it, while never
+        // exposing it as a normal authenticated app user.
+        const isPasswordResetRoute =
+          typeof window !== "undefined" &&
+          window.location.pathname === "/reset-password";
+        if (recoverySessionRef.current) {
+          saveUser(null);
+        } else if (sessionUser && getVerifiedUserId() === sessionUser.id) {
           saveUser(sessionUser);
         } else {
           saveUser(null);
-          if (sessionUser) await supabase.auth.signOut();
+          if (sessionUser && !isPasswordResetRoute) await supabase.auth.signOut();
         }
       } catch (error) {
         console.error("Unable to check login session:", error);
@@ -257,7 +277,7 @@ export function AuthProvider({ children }) {
       const { data, error } = await supabase.auth.verifyOtp({
         email: email.trim().toLowerCase(),
         token: token.trim(),
-        type: "email",
+        type: "signup",
       });
 
       if (error) return { success: false, error: error.message };
@@ -284,6 +304,20 @@ export function AuthProvider({ children }) {
       email: email.trim().toLowerCase(),
     });
     return error ? { success: false, error: error.message } : { success: true };
+  }, []);
+
+  const changeEmail = useCallback(async (email) => {
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) {
+      return { success: false, error: "Enter the new email address." };
+    }
+
+    const { error } = await supabase.auth.updateUser({
+      email: normalizedEmail,
+    });
+    return error
+      ? { success: false, error: error.message }
+      : { success: true, email: normalizedEmail };
   }, []);
 
   const logout = useCallback(async () => {
@@ -313,6 +347,7 @@ export function AuthProvider({ children }) {
         register,
         verifySignupOtp,
         resendSignupOtp,
+        changeEmail,
         logout,
         isAuthenticated: !!user,
         userInitial,

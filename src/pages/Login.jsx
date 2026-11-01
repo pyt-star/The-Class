@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
   FiMail,
   FiLock,
@@ -23,6 +23,7 @@ export default function Login() {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const {
     login,
@@ -214,6 +215,12 @@ export default function Login() {
             </div>
           )}
 
+          {location.state?.passwordResetSuccess && (
+            <div className="auth-alert success" role="status">
+              Your password was updated. Sign in with your new password.
+            </div>
+          )}
+
           {successMessage && otpSent && (
             <div className="auth-alert success" role="status">
               {successMessage}
@@ -249,7 +256,7 @@ export default function Login() {
                 className="forgot-link"
                 onClick={handleResendCode}
                 disabled={loading}
-                style={{ marginTop: "18px" }}
+                style={{ display: "block", marginTop: "18px" }}
               >
                 Resend sign-in code
               </button>
@@ -261,7 +268,7 @@ export default function Login() {
                   setOtp("");
                   setSuccessMessage("");
                 }}
-                style={{ marginTop: "12px" }}
+                style={{ display: "block", marginTop: "12px" }}
               >
                 Back to sign in
               </button>

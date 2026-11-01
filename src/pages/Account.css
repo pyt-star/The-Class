@@ -255,6 +255,78 @@
   color: #201712;
 }
 
+.email-change-form {
+  max-width: 480px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(32, 23, 18, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.email-change-form h3 {
+  margin: 0;
+  color: #201712;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.email-change-form p {
+  margin: 0 0 6px;
+  color: #777;
+  font: 12px/1.6 "Poppins", sans-serif;
+}
+
+.email-change-form label {
+  color: #33261f;
+  font: 11px "Poppins", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.email-change-form input {
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(32, 23, 18, 0.18);
+  border-radius: 8px;
+  background: #faf8f5;
+  font: 13px "Poppins", sans-serif;
+}
+
+.email-change-form button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: #201712;
+  color: #faf8f5;
+  cursor: pointer;
+  font: 11px "Poppins", sans-serif;
+  letter-spacing: 1px;
+}
+
+.email-change-form button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.email-change-alert {
+  padding: 10px 12px;
+  border-radius: 7px;
+  font: 12px/1.5 "Poppins", sans-serif;
+}
+
+.email-change-alert.error {
+  background: #fdf2f2;
+  color: #9b1c1c;
+}
+
+.email-change-alert.success {
+  background: #f3faf7;
+  color: #0e7448;
+}
+
 @media (max-width: 600px) {
   .profile-banner {
     padding: 24px;

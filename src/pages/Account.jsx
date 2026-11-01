@@ -14,7 +14,12 @@ import "./Account.css";
 export default function Account() {
   const { user, isAuthenticated, loading, logout, userInitial } = useAuth();
   const [activeTab, setActiveTab] = useState("orders");
+  const [newEmail, setNewEmail] = useState("");
+  const [emailChangeMessage, setEmailChangeMessage] = useState("");
+  const [emailChangeError, setEmailChangeError] = useState("");
+  const [emailChangeLoading, setEmailChangeLoading] = useState(false);
   const navigate = useNavigate();
+  const { changeEmail } = useAuth();
 
   if (loading && !isAuthenticated) {
     return (
@@ -31,6 +36,34 @@ export default function Account() {
   const handleLogout = async () => {
     await logout();
     navigate("/");
+  };
+
+  const handleChangeEmail = async (event) => {
+    event.preventDefault();
+    setEmailChangeMessage("");
+    setEmailChangeError("");
+
+    if (newEmail.trim().toLowerCase() === user?.email?.toLowerCase()) {
+      setEmailChangeError("Enter an email address different from your current one.");
+      return;
+    }
+
+    setEmailChangeLoading(true);
+    try {
+      const result = await changeEmail(newEmail);
+      if (!result.success) {
+        setEmailChangeError(result.error || "Unable to start the email change.");
+      } else {
+        setEmailChangeMessage(
+          `Check ${result.email} for the confirmation email. Your account email changes after you confirm it.`
+        );
+        setNewEmail("");
+      }
+    } catch (error) {
+      setEmailChangeError(error.message || "Unable to start the email change.");
+    } finally {
+      setEmailChangeLoading(false);
+    }
   };
 
   return (
@@ -138,6 +171,26 @@ export default function Account() {
                   </span>
                 </div>
               </div>
+
+              <form className="email-change-form" onSubmit={handleChangeEmail}>
+                <h3>Change Email Address</h3>
+                <p>We’ll send a confirmation email before updating your account.</p>
+                {emailChangeError && <div className="email-change-alert error" role="alert">{emailChangeError}</div>}
+                {emailChangeMessage && <div className="email-change-alert success" role="status">{emailChangeMessage}</div>}
+                <label htmlFor="new-account-email">New email address</label>
+                <input
+                  id="new-account-email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={newEmail}
+                  onChange={(event) => setNewEmail(event.target.value)}
+                  placeholder="name@example.com"
+                />
+                <button type="submit" disabled={emailChangeLoading}>
+                  {emailChangeLoading ? "SENDING..." : "SEND CONFIRMATION"}
+                </button>
+              </form>
             </div>
           )}
         </div>

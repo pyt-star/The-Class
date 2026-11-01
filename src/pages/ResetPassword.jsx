@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiLock, FiArrowRight, FiCheckCircle } from "react-icons/fi";
 import { supabase } from "../supabaseClient";
@@ -12,6 +12,7 @@ export default function ResetPassword() {
   const [verified, setVerified] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const recoveryDetectedRef = useRef(false);
 
   const navigate = useNavigate();
 
@@ -24,6 +25,7 @@ export default function ResetPassword() {
       if (!active) return;
 
       if (event === "PASSWORD_RECOVERY" && session) {
+        recoveryDetectedRef.current = true;
         setVerified(true);
         setError("");
       }
@@ -39,8 +41,13 @@ export default function ResetPassword() {
         return;
       }
 
-      if (data.session) {
-        // The recovery link may have established a session before this page loaded.
+      const recoveryType = new URLSearchParams(
+        window.location.hash.replace(/^#/, "")
+      ).get("type");
+      if (recoveryDetectedRef.current) return;
+
+      if (data.session && recoveryType === "recovery") {
+        recoveryDetectedRef.current = true;
         setVerified(true);
       } else {
         setError(
@@ -82,11 +89,14 @@ export default function ResetPassword() {
       if (error) {
         setError(error.message);
       } else {
-        setMessage("Your password has been changed successfully!");
-
+        await supabase.auth.signOut();
+        setMessage("Your password has been changed. Returning to sign in...");
         setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+          navigate("/login", {
+            replace: true,
+            state: { passwordResetSuccess: true },
+          });
+        }, 1200);
       }
     } catch {
       setError("Unable to update your password. Please try again.");
@@ -183,7 +193,7 @@ export default function ResetPassword() {
           </form>
         )}
 
-        {error && (
+        {(error || message) && (
           <button
             type="button"
             className="reset-back-btn"
