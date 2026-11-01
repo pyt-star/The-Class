@@ -18,10 +18,19 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [forgotSent, setForgotSent] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { login, isAuthenticated, loading: authLoading } = useAuth();
+  const {
+    login,
+    verifyLoginOtp,
+    resendLoginOtp,
+    isAuthenticated,
+    loading: authLoading,
+  } = useAuth();
 
   const redirectTarget = searchParams.get("redirect") || "/";
 
@@ -51,7 +60,11 @@ export default function Login() {
     try {
       const result = await login(email.trim(), password);
 
-      if (result.success) {
+      if (result.success && result.needsEmailOtp) {
+        setEmail(result.email || email.trim().toLowerCase());
+        setOtpSent(true);
+        setSuccessMessage("A sign-in code has been sent to your email.");
+      } else if (result.success) {
         navigate(redirectTarget);
       } else {
         setErrorMessage(
@@ -61,6 +74,49 @@ export default function Login() {
       }
     } catch (error) {
       setErrorMessage("Unable to sign in. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!/^\d{6,8}$/.test(otp.trim())) {
+      setErrorMessage("Enter the verification code from your email.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await verifyLoginOtp(email, otp);
+      if (!result.success) {
+        setErrorMessage(result.error || "That code could not be verified.");
+        return;
+      }
+      navigate(redirectTarget, { replace: true });
+    } catch {
+      setErrorMessage("Unable to verify the code. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+    setLoading(true);
+    try {
+      const result = await resendLoginOtp(email);
+      if (!result.success) {
+        setErrorMessage(result.error || "Unable to resend the code.");
+      } else {
+        setSuccessMessage("A new sign-in code has been sent.");
+        setOtp("");
+      }
+    } catch {
+      setErrorMessage("Unable to resend the code. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -136,11 +192,12 @@ export default function Login() {
           <div className="auth-header">
             <span className="auth-eyebrow">THE CLASS EXCLUSIVE</span>
 
-            <h1 className="auth-title">Welcome Back</h1>
+            <h1 className="auth-title">{otpSent ? "Verify Sign In" : "Welcome Back"}</h1>
 
             <p className="auth-subtitle">
-              Sign in to manage your fragrance orders, wishlist, and private
-              scent profile.
+              {otpSent
+                ? `Enter the code sent to ${email}.`
+                : "Sign in to manage your fragrance orders, wishlist, and private scent profile."}
             </p>
           </div>
 
@@ -157,6 +214,59 @@ export default function Login() {
             </div>
           )}
 
+          {successMessage && otpSent && (
+            <div className="auth-alert success" role="status">
+              {successMessage}
+            </div>
+          )}
+
+          {otpSent ? (
+            <>
+              <form onSubmit={handleVerifyCode} className="auth-form" noValidate>
+                <div className="form-group">
+                  <label htmlFor="login-otp">Email verification code</label>
+                  <div className="input-wrapper">
+                    <FiLock className="input-icon" />
+                    <input
+                      id="login-otp"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      placeholder="Enter the code"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                      maxLength={8}
+                      required
+                    />
+                  </div>
+                </div>
+                <button type="submit" className="auth-submit-btn" disabled={loading}>
+                  {loading ? "VERIFYING..." : <>VERIFY & SIGN IN <FiArrowRight /></>}
+                </button>
+              </form>
+              <button
+                type="button"
+                className="forgot-link"
+                onClick={handleResendCode}
+                disabled={loading}
+                style={{ marginTop: "18px" }}
+              >
+                Resend sign-in code
+              </button>
+              <button
+                type="button"
+                className="forgot-link"
+                onClick={() => {
+                  setOtpSent(false);
+                  setOtp("");
+                  setSuccessMessage("");
+                }}
+                style={{ marginTop: "12px" }}
+              >
+                Back to sign in
+              </button>
+            </>
+          ) : (
           <form onSubmit={handleSubmit} className="auth-form" noValidate>
             <div className="form-group">
               <label htmlFor="login-email">Email Address</label>
@@ -225,8 +335,9 @@ export default function Login() {
               )}
             </button>
           </form>
+          )}
 
-          <div className="auth-footer-switch">
+          {!otpSent && <div className="auth-footer-switch">
             <span>New to The Class?</span>
 
             <Link
@@ -241,7 +352,7 @@ export default function Login() {
             >
               Create an Account
             </Link>
-          </div>
+          </div>}
         </div>
       </div>
     </main>

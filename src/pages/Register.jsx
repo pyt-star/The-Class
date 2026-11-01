@@ -20,10 +20,18 @@ export default function Register() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { register, isAuthenticated, loading: authLoading } = useAuth();
+  const {
+    register,
+    verifySignupOtp,
+    resendSignupOtp,
+    isAuthenticated,
+    loading: authLoading,
+  } = useAuth();
 
   const redirectTarget = searchParams.get("redirect") || "/";
   const isFromCheckout =
@@ -75,6 +83,7 @@ export default function Register() {
       }
 
       if (result.needsEmailConfirmation) {
+        setEmail(result.email || email.trim().toLowerCase());
         setConfirmationSent(true);
         return;
       }
@@ -85,6 +94,50 @@ export default function Register() {
       setErrorMessage(
         error.message || "Something went wrong. Please try again."
       );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    if (!/^\d{6,8}$/.test(otp.trim())) {
+      setErrorMessage("Enter the verification code from your email.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await verifySignupOtp(email, otp);
+      if (!result.success) {
+        setErrorMessage(result.error || "That code could not be verified.");
+        return;
+      }
+      navigate(redirectTarget, { replace: true });
+    } catch {
+      setErrorMessage("Unable to verify your email. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+    setLoading(true);
+    try {
+      const result = await resendSignupOtp(email);
+      if (!result.success) {
+        setErrorMessage(result.error || "Unable to resend the code.");
+      } else {
+        setSuccessMessage("A new verification code has been sent.");
+        setOtp("");
+      }
+    } catch {
+      setErrorMessage("Unable to resend the code. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -136,8 +189,7 @@ export default function Register() {
               </h1>
 
               <p className="auth-subtitle">
-                Thank you for joining THE CLASS. We've requested an
-                email confirmation for:
+                Enter the verification code sent to:
               </p>
 
               <p>
@@ -145,28 +197,52 @@ export default function Register() {
               </p>
 
               <div className="auth-alert success">
-                Please check your inbox and click the confirmation
-                link to activate your account. Also check your spam
-                or junk folder.
+                Check your inbox and spam folder for the code.
               </div>
 
-              <p className="auth-subtitle">
-                Once your email is verified, return here and sign in.
-              </p>
+              {errorMessage && (
+                <div className="auth-alert error" role="alert">
+                  {errorMessage}
+                </div>
+              )}
+              {successMessage && (
+                <div className="auth-alert success" role="status">
+                  {successMessage}
+                </div>
+              )}
 
-              <Link
-                to={`/login?redirect=${encodeURIComponent(redirectTarget)}`}
-                className="auth-submit-btn"
-                style={{
-                  textDecoration: "none",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "10px",
-                }}
+              <form onSubmit={handleVerifyCode} className="auth-form" noValidate>
+                <div className="form-group">
+                  <label htmlFor="signup-otp">Email verification code</label>
+                  <div className="input-wrapper">
+                    <FiLock className="input-icon" />
+                    <input
+                      id="signup-otp"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      placeholder="Enter the code"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                      maxLength={8}
+                      required
+                    />
+                  </div>
+                </div>
+                <button type="submit" className="auth-submit-btn" disabled={loading}>
+                  {loading ? "VERIFYING..." : <>VERIFY EMAIL <FiArrowRight /></>}
+                </button>
+              </form>
+
+              <button
+                type="button"
+                className="forgot-link"
+                onClick={handleResendCode}
+                disabled={loading}
+                style={{ marginTop: "18px" }}
               >
-                GO TO SIGN IN <FiArrowRight />
-              </Link>
+                Resend verification code
+              </button>
             </div>
           ) : (
             <>

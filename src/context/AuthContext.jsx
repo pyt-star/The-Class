@@ -1,15 +1,16 @@
-
 import {
   createContext,
   useContext,
   useState,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 
 import { supabase } from "../supabaseClient";
 
 const AuthContext = createContext(null);
+const VERIFIED_SESSION_KEY = "the_class_email_otp_verified_user";
 
 function formatUser(user) {
   if (!user) return null;
@@ -25,60 +26,89 @@ function formatUser(user) {
   };
 }
 
-const USER_CACHE_KEY = "the_class_user_session";
-
-function getCachedUser() {
+function getVerifiedUserId() {
   try {
-    const raw = localStorage.getItem(USER_CACHE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    return localStorage.getItem(VERIFIED_SESSION_KEY);
   } catch {
     return null;
   }
 }
 
+function markSessionVerified(user) {
+  try {
+    if (user?.id) {
+      localStorage.setItem(VERIFIED_SESSION_KEY, user.id);
+    }
+  } catch {
+    // Authentication still depends on the Supabase session, not this UI marker.
+  }
+}
+
+function clearVerifiedSession() {
+  try {
+    localStorage.removeItem(VERIFIED_SESSION_KEY);
+  } catch {
+    // Ignore storage errors; the Supabase session remains the source of truth.
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(getCachedUser);
-  const [loading, setLoading] = useState(() => !getCachedUser());
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const authFlowRef = useRef("idle");
 
   const saveUser = useCallback((rawUser) => {
-    const formatted = formatUser(rawUser);
-    setUser(formatted);
-    try {
-      if (formatted) {
-        localStorage.setItem(USER_CACHE_KEY, JSON.stringify(formatted));
-      } else {
-        localStorage.removeItem(USER_CACHE_KEY);
-      }
-    } catch (e) {
-      console.warn("Could not cache user session:", e);
-    }
+    setUser(formatUser(rawUser));
   }, []);
 
-  // Check the existing Supabase session and listen for auth changes.
   useEffect(() => {
     let mounted = true;
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (mounted) {
-        saveUser(session?.user ?? null);
-        setLoading(false);
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+
+      if (event === "SIGNED_OUT") {
+        clearVerifiedSession();
+        saveUser(null);
+      } else if (session?.user) {
+        if (authFlowRef.current === "verify") {
+          markSessionVerified(session.user);
+          saveUser(session.user);
+        } else if (
+          authFlowRef.current === "password" ||
+          authFlowRef.current === "signup"
+        ) {
+          saveUser(null);
+        } else if (getVerifiedUserId() === session.user.id) {
+          saveUser(session.user);
+        } else {
+          saveUser(null);
+        }
+      } else {
+        saveUser(null);
       }
+
+      setLoading(false);
     });
 
     const checkSession = async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
-
         if (error) throw error;
 
-        if (mounted) {
-          saveUser(data.session?.user ?? null);
+        if (!mounted) return;
+
+        const sessionUser = data.session?.user;
+        if (sessionUser && getVerifiedUserId() === sessionUser.id) {
+          saveUser(sessionUser);
+        } else {
+          saveUser(null);
+          if (sessionUser) await supabase.auth.signOut();
         }
       } catch (error) {
         console.error("Unable to check login session:", error);
-
         if (mounted) saveUser(null);
       } finally {
         if (mounted) setLoading(false);
@@ -93,22 +123,50 @@ export function AuthProvider({ children }) {
     };
   }, [saveUser]);
 
-  // LOGIN
   const login = useCallback(async (email, password) => {
+    const normalizedEmail = email.trim().toLowerCase();
+    authFlowRef.current = "password";
+    clearVerifiedSession();
+    saveUser(null);
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: normalizedEmail,
         password,
       });
 
       if (error) {
+        authFlowRef.current = "idle";
         return { success: false, error: error.message };
       }
 
-      saveUser(data.user);
+      if (!data.user) {
+        authFlowRef.current = "idle";
+        return { success: false, error: "Unable to verify this account." };
+      }
 
-      return { success: true };
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) {
+        authFlowRef.current = "idle";
+        return {
+          success: false,
+          error: "Could not secure the sign-in challenge. Please try again.",
+        };
+      }
+
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: normalizedEmail,
+        options: { shouldCreateUser: false },
+      });
+      authFlowRef.current = "idle";
+
+      if (otpError) {
+        return { success: false, error: otpError.message };
+      }
+
+      return { success: true, needsEmailOtp: true, email: normalizedEmail };
     } catch (error) {
+      authFlowRef.current = "idle";
       return {
         success: false,
         error: error.message || "Unable to sign in. Please try again.",
@@ -116,38 +174,76 @@ export function AuthProvider({ children }) {
     }
   }, [saveUser]);
 
-  // REGISTER
+  const verifyLoginOtp = useCallback(async (email, token) => {
+    authFlowRef.current = "verify";
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: email.trim().toLowerCase(),
+        token: token.trim(),
+        type: "email",
+      });
+
+      if (error) return { success: false, error: error.message };
+      if (!data.user || !data.session) {
+        return { success: false, error: "The code could not sign you in. Request a new code." };
+      }
+
+      markSessionVerified(data.user);
+      saveUser(data.user);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message || "Unable to verify the code." };
+    } finally {
+      authFlowRef.current = "idle";
+    }
+  }, [saveUser]);
+
+  const resendLoginOtp = useCallback(async (email) => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim().toLowerCase(),
+      options: { shouldCreateUser: false },
+    });
+    return error ? { success: false, error: error.message } : { success: true };
+  }, []);
+
   const register = useCallback(async (name, email, password) => {
+    const normalizedEmail = email.trim().toLowerCase();
+    authFlowRef.current = "signup";
+    clearVerifiedSession();
+    saveUser(null);
+
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
+        email: normalizedEmail,
         password,
         options: {
-          data: {
-            full_name: name.trim(),
-          },
+          data: { full_name: name.trim() },
         },
       });
 
       if (error) {
+        authFlowRef.current = "idle";
         return { success: false, error: error.message };
       }
 
-      // If email confirmation is enabled, the user may not
-      // have a session until they confirm their email.
-      if (data.session && data.user) {
-        saveUser(data.user);
-
-        return { success: true, needsEmailConfirmation: false };
+      if (data.session) {
+        await supabase.auth.signOut();
+        authFlowRef.current = "idle";
+        saveUser(null);
+        return {
+          success: false,
+          error: "Email verification is disabled in Supabase. Enable Confirm email in Authentication settings, then register again.",
+        };
       }
 
-      saveUser(null);
-
+      authFlowRef.current = "idle";
       return {
         success: true,
         needsEmailConfirmation: true,
+        email: normalizedEmail,
       };
     } catch (error) {
+      authFlowRef.current = "idle";
       return {
         success: false,
         error: error.message || "Registration failed. Please try again.",
@@ -155,10 +251,44 @@ export function AuthProvider({ children }) {
     }
   }, [saveUser]);
 
-  // LOGOUT
-  const logout = useCallback(async () => {
-    const { error } = await supabase.auth.signOut();
+  const verifySignupOtp = useCallback(async (email, token) => {
+    authFlowRef.current = "verify";
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: email.trim().toLowerCase(),
+        token: token.trim(),
+        type: "email",
+      });
 
+      if (error) return { success: false, error: error.message };
+      if (!data.user || !data.session) {
+        return { success: false, error: "The code could not verify your account. Request a new code." };
+      }
+
+      markSessionVerified(data.user);
+      saveUser(data.user);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Unable to verify your email. Please try again.",
+      };
+    } finally {
+      authFlowRef.current = "idle";
+    }
+  }, [saveUser]);
+
+  const resendSignupOtp = useCallback(async (email) => {
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: email.trim().toLowerCase(),
+    });
+    return error ? { success: false, error: error.message } : { success: true };
+  }, []);
+
+  const logout = useCallback(async () => {
+    clearVerifiedSession();
+    const { error } = await supabase.auth.signOut();
     saveUser(null);
 
     if (error) {
@@ -168,7 +298,6 @@ export function AuthProvider({ children }) {
     return { success: true };
   }, [saveUser]);
 
-  // USER INITIAL
   const userInitial = user
     ? (user.name || user.email || "A").trim()[0].toUpperCase()
     : "";
@@ -179,7 +308,11 @@ export function AuthProvider({ children }) {
         user,
         loading,
         login,
+        verifyLoginOtp,
+        resendLoginOtp,
         register,
+        verifySignupOtp,
+        resendSignupOtp,
         logout,
         isAuthenticated: !!user,
         userInitial,
