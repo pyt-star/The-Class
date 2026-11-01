@@ -243,7 +243,6 @@ app.post("/api/create-order", async (req, res) => {
       .from("orders")
       .insert({
         profile_id: profile.id,
-        customer_id: null,
         status: "pending",
         subtotal_inr: amountInRupees,
         discount_inr: 0,
